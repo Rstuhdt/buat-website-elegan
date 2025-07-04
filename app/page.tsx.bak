@@ -1,0 +1,2110 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useTheme } from "next-themes"
+import { ThemeToggle } from "@/components/theme-toggle"
+import {
+  Compass,
+  Target,
+  Users,
+  ImageIcon,
+  TriangleIcon as ExclamationTriangle,
+  Lightbulb,
+  Handshake,
+  TrendingUp,
+  Megaphone,
+  FileText,
+  Rocket,
+  UserIcon as UserGraduate,
+  Store,
+  ClapperboardIcon as ChalkboardTeacher,
+  Sun,
+  Moon,
+  Sparkles,
+  Calendar,
+  BarChart3,
+  Star,
+  Zap,
+  Heart,
+  Coffee,
+  Menu,
+  X,
+} from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+
+interface KPIData {
+  title: string
+  target: number
+  currentValue: number
+  unit: string
+  color: string
+  icon: any
+}
+
+interface BudgetData {
+  category: string
+  allocated: number
+  spent: number
+  color: string
+}
+
+export default function MarketingPortal() {
+  const [activeSection, setActiveSection] = useState("dashboard")
+  const [activeStrategy, setActiveStrategy] = useState("strategi-konten")
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null)
+  const [activeDocSection, setActiveDocSection] = useState("roadmap")
+  const [checkedTasks, setCheckedTasks] = useState(new Set())
+  const [activeSocialSection, setActiveSocialSection] = useState("smo")
+  const [activeTab, setActiveTab] = useState("tab-smo")
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [dailyQuote, setDailyQuote] = useState("")
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [comments, setComments] = useState({})
+  const [showCommentModal, setShowCommentModal] = useState(false)
+  const [currentTaskId, setCurrentTaskId] = useState("")
+  const [currentComment, setCurrentComment] = useState("")
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
+
+  const motivationalQuotes = [
+    "Kesuksesan adalah hasil dari persiapan, kerja keras, dan belajar dari kegagalan. - Colin Powell",
+    "Inovasi membedakan antara pemimpin dan pengikut. - Steve Jobs",
+    "Kualitas bukanlah tindakan, tetapi kebiasaan. - Aristoteles",
+    "Tim yang hebat tidak terjadi begitu saja, mereka dibentuk dengan dedikasi. - John C. Maxwell",
+    "Kreativitas adalah kecerdasan yang bersenang-senang. - Albert Einstein",
+    "Masa depan milik mereka yang percaya pada keindahan mimpi mereka. - Eleanor Roosevelt",
+    "Keunggulan bukanlah keterampilan, tetapi sikap. - Ralph Marston",
+  ]
+
+  const kpiData: KPIData[] = [
+    {
+      title: "Followers Growth",
+      target: 1500,
+      currentValue: 1250,
+      unit: "followers",
+      color: "from-blue-400 to-blue-600",
+      icon: Users,
+    },
+    {
+      title: "Engagement Rate",
+      target: 2.5,
+      currentValue: 2.1,
+      unit: "%",
+      color: "from-green-400 to-green-600",
+      icon: Heart,
+    },
+    {
+      title: "Content Reach",
+      target: 10000,
+      currentValue: 8500,
+      unit: "views",
+      color: "from-purple-400 to-purple-600",
+      icon: Zap,
+    },
+    {
+      title: "Brand Mentions",
+      target: 60,
+      currentValue: 45,
+      unit: "mentions",
+      color: "from-orange-400 to-orange-600",
+      icon: Star,
+    },
+  ]
+
+  const checklistData = [
+    { isCategory: true, task: "A. Perencanaan Strategis & Seminar" },
+    { category: "Seminar", task: "Merancang materi presentasi seminar yang menarik dan edukatif.", pic: "", notes: "" },
+    {
+      category: "Seminar",
+      task: "Memastikan semua logistik pemasaran seminar siap (materi cetak, visual).",
+      pic: "",
+      notes: "",
+    },
+    { category: "Strategi", task: "Menjalin komunikasi proaktif dengan pimpinan sekolah.", pic: "", notes: "" },
+    { isCategory: true, task: "B. Pengembangan Aset Pemasaran" },
+    { category: "Aset Fisik", task: "Mendesain dan mencetak materi (poster, pamflet, spanduk).", pic: "", notes: "" },
+    { category: "Aset Fisik", task: "Mendesain dan memproduksi merchandise (kaos, pin, topi).", pic: "", notes: "" },
+    {
+      category: "Aset Digital",
+      task: "Menyiapkan konten awal untuk Website dan Media Sosial (TikTok).",
+      pic: "",
+      notes: "",
+    },
+    { category: "Aset Digital", task: "Memproduksi video tutorial penggunaan platform.", pic: "", notes: "" },
+    { isCategory: true, task: "C. Pelaksanaan Promosi & Akuisisi" },
+    { category: "Promosi", task: "Menetapkan skema program promosi dan diskon awal.", pic: "", notes: "" },
+    {
+      category: "Akuisisi",
+      task: "Menyiapkan posko bantuan (helpdesk) untuk pendaftaran langsung.",
+      pic: "",
+      notes: "",
+    },
+    {
+      category: "Akuisisi",
+      task: "Merekrut dan memberi pengarahan untuk program Solera Ambassador.",
+      pic: "",
+      notes: "",
+    },
+    { isCategory: true, task: "D. Branding & Hubungan Masyarakat" },
+    {
+      category: "Branding",
+      task: 'Mengembangkan narasi konsisten "Pionir Digital Marketplace untuk Sekolah".',
+      pic: "",
+      notes: "",
+    },
+    { category: "Humas", task: "Menyiapkan protokol dan tim respons krisis internal.", pic: "", notes: "" },
+    { category: "Komunitas", task: "Menjalin kerja sama dengan OSIS untuk cross-promotion.", pic: "", notes: "" },
+    { isCategory: true, task: "E. Umpan Balik & Pelaporan" },
+    { category: "Feedback", task: "Menyiapkan kotak saran fisik dan formulir digital.", pic: "", notes: "" },
+    { category: "Pelaporan", task: "Menyiapkan template laporan harian dan mingguan.", pic: "", notes: "" },
+  ]
+
+  const getGreeting = () => {
+    const hour = currentTime.getHours()
+    if (hour < 12) return "Selamat Pagi, Tim Juara! ☀️"
+    if (hour < 17) return "Selamat Siang, Tim Hebat! 🌟"
+    if (hour < 21) return "Selamat Sore, Tim Luar Biasa! 🌅"
+    return "Selamat Malam, Tim Inspiratif! 🌙"
+  }
+
+  const toggleTask = (index: number) => {
+    const newCheckedTasks = new Set(checkedTasks)
+    if (newCheckedTasks.has(index)) {
+      newCheckedTasks.delete(index)
+    } else {
+      newCheckedTasks.add(index)
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 2000)
+    }
+    setCheckedTasks(newCheckedTasks)
+  }
+
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
+  const toggleAccordion = (id: string) => {
+    setOpenAccordion(openAccordion === id ? null : id)
+  }
+
+  const CircularProgress = ({ percentage, size = 120, strokeWidth = 8, color }: any) => {
+    const radius = (size - strokeWidth) / 2
+    const circumference = radius * 2 * Math.PI
+    const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`
+
+    return (
+      <div className="relative inline-flex items-center justify-center">
+        <svg width={size} height={size} className="transform -rotate-90">
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            fill="none"
+            className="text-gray-200 dark:text-gray-700"
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="url(#gradient)"
+            strokeWidth={strokeWidth}
+            fill="none"
+            strokeDasharray={strokeDasharray}
+            strokeLinecap="round"
+            className="transition-all duration-1000 ease-out"
+          />
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#10b981" />
+              <stop offset="100%" stopColor="#059669" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            {percentage}%
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  const ConfettiAnimation = () => {
+    if (!showConfetti) return null
+
+    return (
+      <div className="fixed inset-0 pointer-events-none z-50">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-bounce"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              animationDuration: `${2 + Math.random() * 2}s`,
+            }}
+          >
+            <div
+              className={`w-2 h-2 rounded-full bg-gradient-to-r ${
+                [
+                  "from-red-400 to-pink-400",
+                  "from-blue-400 to-cyan-400",
+                  "from-green-400 to-emerald-400",
+                  "from-yellow-400 to-orange-400",
+                ][Math.floor(Math.random() * 4)]
+              }`}
+            />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    const today = new Date().getDate()
+    setDailyQuote(motivationalQuotes[today % motivationalQuotes.length])
+  }, [])
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 2000)
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["dashboard", "strategi", "kpi", "linimasa", "aset", "dokumen", "sosmed", "krisis"]
+      const scrollPosition = window.scrollY + 200
+
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element) {
+          const { offsetTop, offsetHeight } = element
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Roadmap data (moved out of JSX so we can map it safely)
+  const roadmapSteps = [
+    {
+      icon: Compass,
+      title: "Fase 1: Persiapan & Fondasi",
+      desc: "Membangun dasar yang kokoh dengan menyelaraskan strategi, menyiapkan materi, dan memahami pasar secara mendalam.",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: Rocket,
+      title: "Fase 2: Peluncuran & Adopsi Awal",
+      desc: "Fokus pada eksekusi peluncuran di SMAN 2 Cibinong, mendorong adopsi, dan membangun citra merek yang positif.",
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: TrendingUp,
+      title: "Fase 3: Optimalisasi & Pertumbuhan",
+      desc: "Menganalisis data, menyempurnakan strategi berdasarkan umpan balik, dan memaksimalkan engagement.",
+      color: "from-orange-500 to-red-500",
+    },
+    {
+      icon: Target,
+      title: "Fase 4: Ekspansi & Skalabilitas",
+      desc: "Menggunakan keberhasilan awal sebagai model dan fondasi untuk ekspansi ke sekolah-sekolah lain.",
+      color: "from-purple-500 to-pink-500",
+    },
+  ]
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-300 to-green-600 flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative">
+            <div className="w-32 h-32 border-4 border-white/20 rounded-full animate-spin border-t-white"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Sparkles className="w-8 h-8 text-white animate-pulse" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mt-8 animate-pulse">Mempersiapkan Pengalaman Luar Biasa...</h2>
+          <p className="text-white/70 mt-2">Tunggu sebentar, keajaiban sedang dimuat</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen transition-all duration-500">
+      <style jsx global>{`
+        :root {
+          --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          --bg-secondary: rgba(255, 255, 255, 0.1);
+          --text-primary: #1a202c;
+          --text-secondary: #4a5568;
+          --glass-bg: rgba(255, 255, 255, 0.15);
+          --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        .dark {
+          --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+          --bg-secondary: rgba(0, 0, 0, 0.3);
+          --text-primary: #f7fafc;
+          --text-secondary: #e2e8f0;
+          --glass-bg: rgba(0, 0, 0, 0.2);
+          --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+          background: var(--bg-primary);
+          background-attachment: fixed;
+        }
+
+        .glass-morphism {
+          background: var(--glass-bg);
+          backdrop-filter: blur(20px);
+          border: 1px solid var(--glass-border);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .floating-animation {
+          animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+
+        .gradient-text {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .hover-lift {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .pulse-glow {
+          animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+          50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.8); }
+        }
+
+        .animated-bg {
+          background: linear-gradient(-45deg, #10b981, #059669, #34d399, #6ee7b7);
+          background-size: 400% 400%;
+          animation: gradient-shift 15s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
+
+      <ConfettiAnimation />
+
+      {/* Animated Background */}
+      <div className="fixed inset-0 animated-bg opacity-90 -z-10"></div>
+      <div className="fixed inset-0 bg-black/20 -z-10"></div>
+
+      {/* Header */}
+      <header className="sticky top-0 z-50 glass-morphism border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <button
+              onClick={() => scrollToSection("dashboard")}
+              className="flex items-center gap-3 hover:opacity-80 transition-all duration-300 hover:scale-105"
+            >
+              <div className="relative">
+                <Image
+                  src="/logo-solera.png"
+                  alt="Logo Solera"
+                  width={40}
+                  height={40}
+                  className="rounded-lg pulse-glow"
+                />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">Portal Marketing</h1>
+                <p className="text-xs text-white/70">Futuristic Dashboard</p>
+              </div>
+            </button>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex">
+              <ul className="flex gap-1">
+                {[
+                  { id: "dashboard", label: "Dasbor", icon: BarChart3 },
+                  { id: "strategi", label: "Strategi", icon: Lightbulb },
+                  { id: "kpi", label: "KPI", icon: Target },
+                  { id: "linimasa", label: "Timeline", icon: Calendar },
+                  { id: "aset", label: "Aset", icon: ImageIcon },
+                  { id: "dokumen", label: "Docs", icon: FileText },
+                  { id: "sosmed", label: "Social", icon: Users },
+                  { id: "krisis", label: "Crisis", icon: ExclamationTriangle },
+                ].map((item) => (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => scrollToSection(item.id)}
+                      className={`flex items-center gap-1 px-2 py-2 rounded-lg font-medium transition-all duration-300 hover-lift text-xs ${
+                        activeSection === item.id
+                          ? "bg-white/20 text-white shadow-lg"
+                          : "text-white/70 hover:text-white hover:bg-white/10"
+                      }`}
+                    >
+                      <item.icon className="w-3 h-3" />
+                      {item.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div className="flex items-center gap-2">
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="lg:hidden glass-morphism p-3 rounded-xl hover-lift text-white hover:bg-white/20 transition-all duration-300"
+              >
+                {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+
+              <ThemeToggle />
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {showMobileMenu && (
+            <div className="lg:hidden mt-4 glass-morphism rounded-xl p-4">
+              <ul className="space-y-2">
+                {[
+                  { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+                  { id: "strategi", label: "Strategi", icon: Lightbulb },
+                  { id: "kpi", label: "KPI", icon: Target },
+                  { id: "linimasa", label: "Timeline", icon: Calendar },
+                  { id: "aset", label: "Aset", icon: ImageIcon },
+                  { id: "dokumen", label: "Dokumen", icon: FileText },
+                  { id: "sosmed", label: "Social Media", icon: Users },
+                  { id: "krisis", label: "Crisis", icon: ExclamationTriangle },
+                ].map((item) => (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => {
+                        scrollToSection(item.id)
+                        setShowMobileMenu(false)
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-300 text-left ${
+                        activeSection === item.id
+                          ? "bg-white/20 text-white shadow-lg"
+                          : "text-white/70 hover:text-white hover:bg-white/10"
+                      }`}
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <main>
+        {/* Hero Dashboard Section */}
+        <section id="dashboard" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            {/* Dynamic Greeting */}
+            <div className="text-center mb-16 floating-animation">
+              <h2 className="text-6xl font-bold text-white mb-4">{getGreeting()}</h2>
+              <div className="glass-morphism rounded-2xl p-8 max-w-4xl mx-auto">
+                <p className="text-xl text-white/90 mb-4 italic">"{dailyQuote}"</p>
+                <div className="flex items-center justify-center gap-4 text-white/70">
+                  <Coffee className="w-5 h-5" />
+                  <span>{currentTime.toLocaleTimeString("id-ID")}</span>
+                  <span>•</span>
+                  <span>
+                    {currentTime.toLocaleDateString("id-ID", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Navigation Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+              {[
+                {
+                  icon: Compass,
+                  title: "Pilar Strategi",
+                  desc: "Pahami 5 pilar utama yang menjadi fondasi kampanye kita.",
+                  target: "strategi",
+                  color: "from-blue-500 to-cyan-500",
+                },
+                {
+                  icon: Target,
+                  title: "Kinerja & KPI",
+                  desc: "Lacak progres pencapaian target peluncuran secara real-time.",
+                  target: "kpi",
+                  color: "from-green-500 to-emerald-500",
+                },
+                {
+                  icon: Users,
+                  title: "Social Media",
+                  desc: "Panduan lengkap tim social media dan strategi konten.",
+                  target: "sosmed",
+                  color: "from-purple-500 to-pink-500",
+                },
+                {
+                  icon: ImageIcon,
+                  title: "Pustaka Aset",
+                  desc: "Unduh semua materi pemasaran resmi yang siap digunakan.",
+                  target: "aset",
+                  color: "from-orange-500 to-red-500",
+                },
+              ].map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToSection(item.target)}
+                  className="glass-morphism rounded-2xl p-6 text-left hover-lift group floating-animation"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div
+                    className={`w-12 h-12 bg-gradient-to-r ${item.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                  >
+                    <item.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2 text-white">{item.title}</h4>
+                  <p className="text-white/70 text-sm leading-relaxed">{item.desc}</p>
+                </button>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={() => scrollToSection("krisis")}
+                className="glass-morphism px-8 py-4 border-2 border-red-500/50 text-red-300 font-semibold rounded-xl hover-lift hover:bg-red-500/20 transition-all duration-300 inline-flex items-center gap-3"
+              >
+                <ExclamationTriangle className="w-5 h-5" />
+                Akses Protokol Komunikasi Krisis
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Strategy Section */}
+        <section id="strategi" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold text-white mb-4">Pilar Strategi Pemasaran</h2>
+              <p className="text-xl text-white/80 max-w-4xl mx-auto">
+                Fondasi untuk membangun merek, mengedukasi pasar, dan mendorong adopsi platform Solera.
+              </p>
+            </div>
+
+            <div className="flex gap-12">
+              <aside className="w-64 sticky top-32 self-start">
+                <div className="glass-morphism rounded-2xl p-6">
+                  <ul className="space-y-2">
+                    {[
+                      { id: "strategi-konten", icon: Lightbulb, label: "Konten Edukatif" },
+                      { id: "strategi-komunitas", icon: Users, label: "Community Engagement" },
+                      { id: "strategi-kemitraan", icon: Handshake, label: "Kemitraan Strategis" },
+                      { id: "strategi-digital", icon: TrendingUp, label: "Pemasaran Digital" },
+                      { id: "strategi-pr", icon: Megaphone, label: "Public Relations" },
+                    ].map((item) => (
+                      <li key={item.id}>
+                        <button
+                          onClick={() => {
+                            setActiveStrategy(item.id)
+                            scrollToSection(item.id)
+                          }}
+                          className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left font-medium transition-all duration-300 hover-lift ${
+                            activeStrategy === item.id
+                              ? "bg-white/20 text-white shadow-lg"
+                              : "text-white/70 hover:text-white hover:bg-white/10"
+                          }`}
+                        >
+                          <item.icon className="w-5 h-5" />
+                          {item.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
+
+              <div className="flex-1">
+                <div className="glass-morphism rounded-2xl p-6 mb-8">
+                  <p className="text-white/90">
+                    Setiap strategi harus selaras dengan target pasar kita.{" "}
+                    <button
+                      onClick={() => scrollToSection("aset")}
+                      className="font-semibold text-blue-300 hover:text-blue-200 hover:underline transition-colors"
+                    >
+                      Lihat Profil Target Audiens di sini →
+                    </button>
+                  </p>
+                </div>
+
+                <div className="space-y-12">
+                  <div id="strategi-konten" className="glass-morphism rounded-2xl p-8 hover-lift">
+                    <h3 className="text-3xl font-bold mb-6 flex items-center gap-4 text-white">
+                      <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                        <Lightbulb className="w-6 h-6 text-white" />
+                      </div>
+                      Pemasaran Konten Edukatif
+                    </h3>
+                    <p className="text-lg text-white/80 mb-6">
+                      Menyoroti bagaimana Solera menjawab tantangan nyata di sekolah: antrean panjang, transaksi tunai,
+                      dan kurangnya promosi UMKM pelajar.
+                    </p>
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Video Pendek:</strong> Membuat konten 15-60 detik untuk TikTok
+                          & Instagram, seperti video "sebelum-sesudah".
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Infografis & Artikel:</strong> Menjelaskan manfaat platform
+                          secara mendalam melalui website Solera.
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div id="strategi-komunitas" className="glass-morphism rounded-2xl p-8 hover-lift">
+                    <h3 className="text-3xl font-bold mb-6 flex items-center gap-4 text-white">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                        <Users className="w-6 h-6 text-white" />
+                      </div>
+                      Community Engagement
+                    </h3>
+                    <p className="text-lg text-white/80 mb-6">
+                      Interaksi langsung dengan komunitas sekolah untuk membangun kepercayaan dan mendorong adopsi
+                      melalui kegiatan di lapangan.
+                    </p>
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Seminar & Workshop:</strong> Mengedukasi manfaat digitalisasi
+                          dan memberikan workshop interaktif bagi UMKM.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-red-400 to-orange-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Solera Ambassador:</strong> Merekrut siswa proaktif sebagai
+                          "wajah" merek di sekolah.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Posko Bantuan On-Site:</strong> Menyiapkan posko di area
+                          strategis seperti kantin untuk membangun kepercayaan.
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div id="strategi-kemitraan" className="glass-morphism rounded-2xl p-8 hover-lift">
+                    <h3 className="text-3xl font-bold mb-6 flex items-center gap-4 text-white">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl flex items-center justify-center">
+                        <Handshake className="w-6 h-6 text-white" />
+                      </div>
+                      Kemitraan Strategis
+                    </h3>
+                    <p className="text-lg text-white/80 mb-6">
+                      Membangun hubungan dengan pihak kunci untuk meningkatkan kredibilitas dan mempermudah
+                      implementasi.
+                    </p>
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Institusional Sekolah:</strong> Mendapatkan dukungan resmi dari
+                          manajemen sekolah.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-red-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">UMKM Unggulan:</strong> Menampilkan kisah sukses UMKM pelajar
+                          sebagai testimoni.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Organisasi Siswa:</strong> Bekerja sama dengan OSIS untuk
+                          promosi silang dan event bersama.
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div id="strategi-digital" className="glass-morphism rounded-2xl p-8 hover-lift">
+                    <h3 className="text-3xl font-bold mb-6 flex items-center gap-4 text-white">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
+                      Pemasaran Digital
+                    </h3>
+                    <p className="text-lg text-white/80 mb-6">
+                      Memastikan Solera mudah ditemukan dan menjangkau target audiens dengan pesan yang tepat.
+                    </p>
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">SEO & ASO:</strong> Optimalisasi website dan aplikasi dengan
+                          kata kunci seperti "aplikasi kantin sekolah".
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-teal-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Iklan Bertarget:</strong> Menjalankan iklan di TikTok dan
+                          Instagram Ads dengan penargetan presisi.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Iklan Internal:</strong> Mendorong UMKM memanfaatkan fitur
+                          iklan di dalam platform Solera.
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div id="strategi-pr" className="glass-morphism rounded-2xl p-8 hover-lift">
+                    <h3 className="text-3xl font-bold mb-6 flex items-center gap-4 text-white">
+                      <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center">
+                        <Megaphone className="w-6 h-6 text-white" />
+                      </div>
+                      Public Relations & Humas
+                    </h3>
+                    <p className="text-lg text-white/80 mb-6">
+                      Membangun narasi konsisten tentang Solera sebagai inovator yang memberdayakan generasi muda.
+                    </p>
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Narasi Merek:</strong> Mengembangkan narasi "Pionir Digital
+                          Marketplace untuk Sekolah".
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4">
+                        <div className="w-2 h-2 bg-gradient-to-r from-violet-400 to-purple-400 rounded-full mt-3 flex-shrink-0"></div>
+                        <div className="text-white/90">
+                          <strong className="text-white">Siaran Pers:</strong> Mengirimkan siaran pers ke media
+                          pendidikan dan teknologi tentang dampak positif proyek.
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* KPI Section */}
+        <section id="kpi" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold text-white mb-4">Kinerja & Pelaporan</h2>
+              <p className="text-xl text-white/80 max-w-4xl mx-auto">
+                Pantau Indikator Kinerja Utama (KPI) dan ikuti prosedur pelaporan untuk memastikan setiap data
+                ditindaklanjuti.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {kpiData.map((kpi, index) => {
+                const percentage = Math.round((kpi.currentValue / kpi.target) * 100)
+                return (
+                  <div key={index} className="glass-morphism rounded-2xl p-6 hover-lift text-center group">
+                    <div className="mb-6">
+                      <CircularProgress percentage={percentage} size={120} strokeWidth={8} color={kpi.color} />
+                    </div>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <kpi.icon className="w-5 h-5 text-white/70" />
+                      <h4 className="font-semibold text-white">{kpi.title}</h4>
+                    </div>
+                    <div className="text-sm text-white/60 mb-2">
+                      Target: {kpi.target.toLocaleString("id-ID")} {kpi.unit}
+                    </div>
+                    <div className="text-xs text-white/50">
+                      Current: {kpi.currentValue.toLocaleString("id-ID")} {kpi.unit}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="glass-morphism rounded-3xl p-10">
+              <h3 className="text-3xl font-bold mb-6 text-white">Pusat Pelaporan</h3>
+              <p className="text-white/80 mb-8">
+                Data adalah awal. Tindak lanjuti setiap KPI dengan prosedur yang tepat untuk menutup siklus umpan balik.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="glass-morphism p-6 rounded-2xl hover-lift">
+                  <h4 className="text-lg font-semibold mb-3 text-white">Feedback Cepat</h4>
+                  <p className="text-white/70 mb-6">
+                    Gunakan wawancara, observasi, dan kotak saran untuk insight kualitatif pasca-peluncuran.
+                  </p>
+                  <Link
+                    href="https://docs.google.com/forms/u/0/?tgif=d"
+                    target="_blank"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-300"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Contoh Form
+                  </Link>
+                </div>
+                <div className="glass-morphism p-6 rounded-2xl hover-lift">
+                  <h4 className="text-lg font-semibold mb-3 text-white">Laporan Rutin</h4>
+                  <p className="text-white/70 mb-6">
+                    Susun laporan harian (quick check-in) dan mingguan (deep dive) untuk evaluasi berkelanjutan.
+                  </p>
+                  <button className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300">
+                    <FileText className="w-4 h-4" />
+                    Unduh Template
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Timeline Section */}
+        <section id="linimasa" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold text-white mb-4">Linimasa Kritis</h2>
+              <p className="text-xl text-white/80 max-w-4xl mx-auto">
+                Panduan langkah demi langkah untuk setiap tahap peluncuran Solera di SMAN 2 Cibinong.
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="relative">
+                <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-white via-green-300 to-green-600 rounded-full"></div>
+
+                <div className="space-y-12">
+                  {[
+                    {
+                      icon: Megaphone,
+                      title: "Minggu ke-1: Pra-Peluncuran & Seminar",
+                      desc: "Fokus pada perancangan materi, penyiapan logistik, dan mendorong partisipasi untuk memperkenalkan platform kepada seluruh warga sekolah.",
+                      color: "from-blue-500 to-cyan-500",
+                    },
+                    {
+                      icon: ChalkboardTeacher,
+                      title: "3-5 Hari Pasca-Seminar: Pelatihan",
+                      desc: "Mendukung tim operasional dalam penyampaian materi pelatihan kepada UMKM dan kurir, dengan fokus pada nilai jual platform.",
+                      color: "from-green-500 to-emerald-500",
+                    },
+                    {
+                      icon: Users,
+                      title: "Minggu ke-2: Uji Coba & Feedback",
+                      desc: "Berinteraksi langsung dengan pengguna uji coba untuk mengamati UX dan mengumpulkan feedback awal untuk iterasi kampanye pemasaran.",
+                      color: "from-purple-500 to-pink-500",
+                    },
+                    {
+                      icon: Rocket,
+                      title: "Minggu ke-3: Implementasi Penuh",
+                      desc: "Memastikan platform diterapkan di seluruh sekolah dan terus aktif mengumpulkan feedback untuk peningkatan berkelanjutan.",
+                      color: "from-orange-500 to-red-500",
+                    },
+                  ].map((item, index) => (
+                    <div key={index} className="relative flex items-start gap-8">
+                      <div
+                        className={`flex-shrink-0 w-16 h-16 bg-gradient-to-r ${item.color} rounded-2xl flex items-center justify-center z-10 shadow-lg`}
+                      >
+                        <item.icon className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="glass-morphism rounded-2xl p-8 flex-1 hover-lift">
+                        <h3 className="text-2xl font-bold mb-4 text-white">{item.title}</h3>
+                        <p className="text-white/80 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Assets Section */}
+        <section id="aset" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold text-white mb-4">Pustaka Aset & Profil Audiens</h2>
+              <p className="text-xl text-white/80 max-w-4xl mx-auto">
+                Semua materi siap pakai dan pemahaman mendalam tentang target pasar kita dalam satu tempat.
+              </p>
+            </div>
+
+            <h3 className="text-3xl font-bold text-center mb-8 text-white">Pustaka Aset</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+              {[
+                {
+                  image: "/placeholder.svg?height=180&width=300",
+                  title: "Konten Media Sosial",
+                  desc: "Paket konten visual untuk TikTok dan Instagram, termasuk infografis dan template video.",
+                  buttonText: "Unduh Paket",
+                  color: "from-blue-500 to-cyan-500",
+                },
+                {
+                  image: "/placeholder.svg?height=180&width=300",
+                  title: "Video Tutorial",
+                  desc: "Video panduan penggunaan fitur kunci seperti cashless, pre-order, dan pendaftaran UMKM.",
+                  buttonText: "Lihat di YouTube",
+                  color: "from-purple-500 to-pink-500",
+                },
+                {
+                  image: "/placeholder.svg?height=180&width=300",
+                  title: "Materi Fisik",
+                  desc: "File desain resolusi tinggi untuk poster, spanduk, dan merchandise Solera Ambassador.",
+                  buttonText: "Unduh Desain (.zip)",
+                  color: "from-green-500 to-emerald-500",
+                },
+              ].map((asset, index) => (
+                <div key={index} className="glass-morphism rounded-2xl overflow-hidden hover-lift">
+                  <Image
+                    src={asset.image || "/placeholder.svg"}
+                    alt={asset.title}
+                    width={300}
+                    height={180}
+                    className="w-full h-45 object-cover"
+                  />
+                  <div className="p-6">
+                    <h4 className="text-lg font-semibold mb-3 text-white">{asset.title}</h4>
+                    <p className="text-white/70 text-sm mb-6 leading-relaxed">{asset.desc}</p>
+                    <button
+                      className={`w-full bg-gradient-to-r ${asset.color} text-white py-3 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium`}
+                    >
+                      {asset.buttonText}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div id="audiens">
+              <h3 className="text-3xl font-bold text-center mb-8 text-white">Profil Target Audiens</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                  {
+                    icon: UserGraduate,
+                    title: "Siswa",
+                    bgColor: "from-green-500 to-emerald-500",
+                    characteristics:
+                      "Generasi Z yang akrab teknologi, konsumen utama layanan pemesanan makanan, dan mencari efisiensi.",
+                    solution: "Fitur pre-order dan cashless mengatasi antrean panjang dan memudahkan transaksi.",
+                  },
+                  {
+                    icon: ChalkboardTeacher,
+                    title: "Guru & Staf",
+                    bgColor: "from-indigo-500 to-purple-500",
+                    characteristics:
+                      "Pengguna potensial layanan pemesanan dan cashless, serta berperan sebagai influencer di ekosistem sekolah.",
+                    solution: "Memberikan efisiensi waktu dan kemudahan transaksi digital di tengah kesibukan.",
+                  },
+                  {
+                    icon: Store,
+                    title: "UMKM Pelajar",
+                    bgColor: "from-orange-500 to-red-500",
+                    characteristics:
+                      "Merchant yang membutuhkan dukungan dan visibilitas lebih, serta solusi digitalisasi yang praktis.",
+                    solution:
+                      "Menyediakan platform untuk menjangkau seluruh warga sekolah dan fitur iklan untuk promosi.",
+                  },
+                ].map((persona, index) => (
+                  <div key={index} className="glass-morphism rounded-2xl overflow-hidden hover-lift">
+                    <div className={`bg-gradient-to-r ${persona.bgColor} text-white p-8 text-center`}>
+                      <persona.icon className="w-12 h-12 mx-auto mb-4" />
+                      <h3 className="text-2xl font-bold">{persona.title}</h3>
+                    </div>
+                    <div className="p-6">
+                      <h4 className="font-semibold mb-3 text-white">Karakteristik</h4>
+                      <p className="text-white/80 mb-6 leading-relaxed">{persona.characteristics}</p>
+                      <h4 className="font-semibold mb-3 text-white">Solusi Solera</h4>
+                      <p className="text-white/80 leading-relaxed">{persona.solution}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Master Strategy Document Section */}
+        <section id="dokumen" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold mb-4 text-white">Master Dokumen Strategi</h2>
+              <p className="text-xl text-white/80 max-w-4xl mx-auto">
+                Kumpulan panduan strategis dan taktis yang mendalam untuk Divisi Marketing Solera. Gunakan dokumen ini
+                sebagai referensi utama dalam perencanaan dan eksekusi kampanye.
+              </p>
+            </div>
+
+            {/* Document Hub */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+              <button
+                onClick={() => setActiveDocSection("roadmap")}
+                className={`glass-morphism flex items-start p-6 rounded-2xl text-left hover-lift group ${
+                  activeDocSection === "roadmap" ? "bg-white/20 border-2 border-white/30" : ""
+                }`}
+              >
+                <div className="text-3xl text-blue-400 mr-6 mt-1 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="w-8 h-8" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold mb-3 text-white">Roadmap Tim Marketing</h4>
+                  <p className="text-white/70">
+                    Visualisasi perjalanan strategis tim dari fase persiapan, peluncuran, optimalisasi, hingga ekspansi
+                    di masa depan.
+                  </p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => setActiveDocSection("strategy-detail")}
+                className={`glass-morphism flex items-start p-6 rounded-2xl text-left hover-lift group ${
+                  activeDocSection === "strategy-detail" ? "bg-white/20 border-2 border-white/30" : ""
+                }`}
+              >
+                <div className="text-3xl text-green-400 mr-6 mt-1 group-hover:scale-110 transition-transform">
+                  <FileText className="w-8 h-8" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold mb-3 text-white">Detail Strategi & Rencana</h4>
+                  <p className="text-white/70">
+                    Panduan lengkap untuk komunikasi, pengembangan materi, promosi, dan akuisisi pengguna.
+                  </p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => setActiveDocSection("milestone")}
+                className={`md:col-span-2 glass-morphism flex items-start p-6 rounded-2xl text-left hover-lift group ${
+                  activeDocSection === "milestone" ? "bg-white/20 border-2 border-white/30" : ""
+                }`}
+              >
+                <div className="text-3xl text-red-400 mr-6 mt-1 group-hover:scale-110 transition-transform">
+                  <Target className="w-8 h-8" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold mb-3 text-white">Milestone & Checklist Persiapan</h4>
+                  <p className="text-white/70">
+                    Pusat kendali operasional untuk melacak semua tugas dari awal hingga akhir, lengkap dengan checklist
+                    interaktif.
+                  </p>
+                </div>
+              </button>
+            </div>
+
+            {/* Dynamic Content Based on Selection */}
+            {activeDocSection === "roadmap" && (
+              <div className="glass-morphism rounded-3xl p-10">
+                <h3 className="text-3xl font-bold mb-8 text-white">Roadmap Strategis Tim Marketing</h3>
+                <p className="text-white/80 mb-12 text-lg">
+                  Sebuah panduan visual perjalanan dari persiapan awal hingga ekspansi di masa depan, memastikan setiap
+                  langkah selaras dengan visi besar Solera.
+                </p>
+
+                <div className="relative">
+                  {/* vertical timeline line */}
+                  <div className="absolute left-12 top-0 bottom-0 w-1 bg-gradient-to-b from-white via-green-300 to-green-600 rounded-full" />
+
+                  <div className="space-y-12">
+                    {roadmapSteps.map((step, index) => (
+                      <div key={index} className="relative flex items-start gap-8">
+                        <div
+                          className={`flex-shrink-0 w-16 h-16 bg-gradient-to-r ${step.color} rounded-2xl flex items-center justify-center z-10 shadow-lg`}
+                        >
+                          <step.icon className="w-8 h-8 text-white" />
+                        </div>
+
+                        <div className="glass-morphism rounded-2xl p-8 flex-1 hover-lift">
+                          <h4 className="text-2xl font-bold mb-4 text-white">{step.title}</h4>
+                          <p className="text-white/80 leading-relaxed">{step.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeDocSection === "strategy-detail" && (
+              <div className="glass-morphism rounded-3xl p-10">
+                <h3 className="text-3xl font-bold mb-8 text-white">Detail Strategi & Rencana Pelaksanaan</h3>
+                <p className="text-white/80 mb-12 text-lg">
+                  Panduan komprehensif yang mencakup semua aspek strategis untuk memastikan peluncuran Solera berjalan
+                  sukses dan berkelanjutan.
+                </p>
+
+                <div className="space-y-8">
+                  {/* Communication Strategy */}
+                  <div className="glass-morphism p-8 rounded-2xl border-l-4 border-blue-500">
+                    <h4 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                      <Megaphone className="w-6 h-6" />
+                      Strategi Komunikasi
+                    </h4>
+                    <div className="space-y-4">
+                      <div>
+                        <h5 className="font-semibold text-white mb-2">Pesan Kunci (Key Messages)</h5>
+                        <ul className="text-white/80 space-y-2 ml-4">
+                          <li>• "Solera: Revolusi Digital untuk Kantin Sekolah"</li>
+                          <li>• "Cashless, Efisien, Mendukung UMKM Pelajar"</li>
+                          <li>• "Teknologi yang Memberdayakan Generasi Muda"</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="font-semibold text-white mb-2">Tone of Voice</h5>
+                        <p className="text-white/80">
+                          Ramah, inspiratif, dan edukatif. Menggunakan bahasa yang mudah dipahami namun tetap
+                          profesional, dengan sentuhan teknologi yang tidak menakutkan.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Material Development */}
+                  <div className="glass-morphism p-8 rounded-2xl border-l-4 border-green-500">
+                    <h4 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                      <ImageIcon className="w-6 h-6" />
+                      Pengembangan Materi
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h5 className="font-semibold text-white mb-3">Materi Digital</h5>
+                        <ul className="text-white/80 space-y-2">
+                          <li>• Video explainer 2-3 menit</li>
+                          <li>• Infografis benefit comparison</li>
+                          <li>• Social media content templates</li>
+                          <li>• Interactive demo materials</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="font-semibold text-white mb-3">Materi Fisik</h5>
+                        <ul className="text-white/80 space-y-2">
+                          <li>• Banner dan poster promosi</li>
+                          <li>• Brosur informasi lengkap</li>
+                          <li>• Merchandise ambassador</li>
+                          <li>• Standee dan display materials</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Promotion Strategy */}
+                  <div className="glass-morphism p-8 rounded-2xl border-l-4 border-purple-500">
+                    <h4 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                      <TrendingUp className="w-6 h-6" />
+                      Strategi Promosi
+                    </h4>
+                    <div className="space-y-4">
+                      <div>
+                        <h5 className="font-semibold text-white mb-2">Program Insentif Awal</h5>
+                        <ul className="text-white/80 space-y-2 ml-4">
+                          <li>• Cashback 10% untuk 100 transaksi pertama</li>
+                          <li>• Free merchandise untuk early adopters</li>
+                          <li>• Loyalty points untuk frequent users</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="font-semibold text-white mb-2">Event & Aktivasi</h5>
+                        <ul className="text-white/80 space-y-2 ml-4">
+                          <li>• Seminar edukasi digitalisasi</li>
+                          <li>• Workshop UMKM empowerment</li>
+                          <li>• Demo booth di area strategis</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeDocSection === "milestone" && (
+              <div className="glass-morphism rounded-3xl p-10">
+                <h3 className="text-3xl font-bold mb-8 text-white">Milestone & Checklist Persiapan</h3>
+                <p className="text-white/80 mb-12 text-lg">
+                  Pusat kendali operasional untuk melacak semua tugas dari awal hingga akhir. Centang setiap item yang
+                  telah diselesaikan untuk memantau progres tim.
+                </p>
+
+                <div className="space-y-6">
+                  {checklistData.map((item, index) => {
+                    if (item.isCategory) {
+                      return (
+                        <div key={index} className="mt-8 first:mt-0">
+                          <h4 className="text-xl font-bold text-white bg-gradient-to-r from-green-500 to-emerald-500 p-4 rounded-xl">
+                            {item.task}
+                          </h4>
+                        </div>
+                      )
+                    }
+
+                    const isChecked = checkedTasks.has(index)
+                    return (
+                      <div
+                        key={index}
+                        className={`glass-morphism p-6 rounded-xl transition-all duration-300 hover-lift ${
+                          isChecked ? "bg-green-500/20 border-green-500/50" : ""
+                        }`}
+                      >
+                        <div className="flex items-start gap-4">
+                          <button
+                            onClick={() => toggleTask(index)}
+                            className={`flex-shrink-0 w-6 h-6 rounded-full border-2 transition-all duration-300 ${
+                              isChecked ? "bg-green-500 border-green-500" : "border-white/30 hover:border-green-400"
+                            }`}
+                          >
+                            {isChecked && (
+                              <svg className="w-4 h-4 text-white m-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between gap-4">
+                              <p className={`text-white leading-relaxed ${isChecked ? "line-through opacity-70" : ""}`}>
+                                {item.task}
+                              </p>
+                              <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full flex-shrink-0">
+                                {item.category}
+                              </span>
+                            </div>
+                            {item.pic && (
+                              <div className="mt-2 text-sm text-white/60">
+                                <strong>PIC:</strong> {item.pic}
+                              </div>
+                            )}
+                            {item.notes && (
+                              <div className="mt-2 text-sm text-white/60">
+                                <strong>Notes:</strong> {item.notes}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <div className="mt-12 text-center">
+                  <div className="glass-morphism p-6 rounded-2xl">
+                    <h4 className="text-xl font-bold text-white mb-4">Progress Overview</h4>
+                    <div className="flex items-center justify-center gap-8">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-green-400">{checkedTasks.size}</div>
+                        <div className="text-white/70">Completed</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-blue-400">
+                          {checklistData.filter((item) => !item.isCategory).length - checkedTasks.size}
+                        </div>
+                        <div className="text-white/70">Remaining</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-purple-400">
+                          {Math.round(
+                            (checkedTasks.size / checklistData.filter((item) => !item.isCategory).length) * 100,
+                          )}
+                          %
+                        </div>
+                        <div className="text-white/70">Progress</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Social Media Section */}
+        <section id="sosmed" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold text-white mb-4">Panduan Tim Social Media</h2>
+              <p className="text-xl text-white/80 max-w-4xl mx-auto">
+                Dokumen ini berfungsi sebagai panduan operasional standar (SOP) untuk setiap peran dalam tim media
+                sosial, memastikan alur kerja yang sinergis dan pencapaian target yang optimal.
+              </p>
+            </div>
+
+            {/* Role Navigation */}
+            <div className="flex justify-center mb-12">
+              <div className="glass-morphism rounded-2xl p-2">
+                <div className="flex gap-2">
+                  {[
+                    { id: "smo", label: "Social Media Officer", icon: Target },
+                    { id: "writer", label: "Content Writer", icon: FileText },
+                    { id: "designer", label: "Graphic Designer", icon: ImageIcon },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveSocialSection(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                        activeSocialSection === tab.id
+                          ? "bg-white/20 text-white shadow-lg"
+                          : "text-white/70 hover:text-white hover:bg-white/10"
+                      }`}
+                    >
+                      <tab.icon className="w-4 h-4" />
+                      <span className="hidden md:inline">{tab.label}</span>
+                      <span className="md:hidden">{tab.label.split(" ")[0]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Social Media Officer */}
+            {activeSocialSection === "smo" && (
+              <div className="glass-morphism rounded-3xl p-10 hover-lift">
+                <div className="text-center mb-8">
+                  <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <Target className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-4">Social Media Officer</h3>
+                  <p className="text-white/80 text-lg max-w-3xl mx-auto">
+                    Sebagai nakhoda strategi media sosial, bertanggung jawab atas perencanaan, kualitas, manajemen, dan
+                    pencapaian target pertumbuhan serta engagement.
+                  </p>
+                </div>
+
+                {/* KPI Section */}
+                <div className="mb-12">
+                  <h4 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <BarChart3 className="w-6 h-6" />
+                    Indikator Kinerja Utama (KPI)
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-green-500">
+                      <h5 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <Users className="w-5 h-5" />
+                        Peningkatan Followers 1-5% per Bulan
+                      </h5>
+                      <p className="text-white/80">
+                        Pertumbuhan audiens yang sehat adalah fondasi dari jangkauan yang lebih luas. Target ini dicapai
+                        melalui eksekusi yang konsisten.
+                      </p>
+                    </div>
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-blue-500">
+                      <h5 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <Heart className="w-5 h-5" />
+                        Engagement Rate 1,5% per Bulan
+                      </h5>
+                      <p className="text-white/80">
+                        Interaksi yang tinggi menunjukkan konten yang relevan dan komunitas yang aktif. Target ini
+                        dicapai melalui konten yang memancing interaksi dan manajemen komunitas yang proaktif.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Strategic Responsibilities */}
+                <div className="mb-12">
+                  <h4 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <Lightbulb className="w-6 h-6" />
+                    Tanggung Jawab Strategis & Perencanaan
+                  </h4>
+                  <p className="text-white/80 mb-6">
+                    Tugas utama seorang Officer adalah memastikan seluruh mesin konten berjalan sesuai dengan tujuan dan
+                    tenggat waktu.
+                  </p>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        title: "Ensure the Quality & Quantity of Content Plan",
+                        desc: "Memastikan rencana konten yang dibuat memenuhi standar kualitas dan kuantitas yang telah ditetapkan.",
+                      },
+                      {
+                        title: "Ensure Content Plan is Done by the Deadline",
+                        desc: "Bertanggung jawab memastikan semua tahapan rencana konten, dari ide hingga publikasi, selesai tepat waktu.",
+                      },
+                      {
+                        title: "Ensure Content Ideas always Align with Objective Content",
+                        desc: "Menjaga agar setiap ide konten yang dieksekusi selalu sejalan dan mendukung tujuan utama (objective) dari kampanye.",
+                      },
+                      {
+                        title: "Create & Produce 1 Viral Content Idea in Every Month",
+                        desc: "Memimpin sesi brainstorming dan produksi untuk menghasilkan setidaknya satu ide konten dengan potensi viral setiap bulannya.",
+                      },
+                    ].map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/10 transition-colors"
+                      >
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <h6 className="font-semibold text-white mb-2">{item.title}</h6>
+                          <p className="text-white/70 text-sm">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Daily Execution */}
+                <div>
+                  <h4 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <Calendar className="w-6 h-6" />
+                    Tugas Eksekusi & Manajemen Harian
+                  </h4>
+                  <p className="text-white/80 mb-6">
+                    Selain strategi, seorang Officer juga terlibat dalam eksekusi dan pemantauan harian untuk menjaga
+                    momentum.
+                  </p>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        title: "Posting & Scheduling",
+                        desc: "Bertanggung jawab atas publikasi konten di Instagram Feeds, Story, dan Reels sesuai dengan jadwal yang ada di plottingan konten.",
+                      },
+                      {
+                        title: "Final Check",
+                        desc: "Melakukan pemeriksaan akhir pada caption Instagram yang telah dibuat oleh Content Writer untuk memastikan tidak ada kesalahan dan sesuai dengan tone of voice brand.",
+                      },
+                      {
+                        title: "Community Management",
+                        desc: "Wajib membalas komentar yang masuk di Instagram setiap hari (Reply Instagram Comment Every Day) untuk menjaga engagement.",
+                      },
+                      {
+                        title: "Content Distribution",
+                        desc: "Membagikan konten yang sudah dipublikasikan ke grup komunitas yang relevan, seperti 'SOBAT IDEALS Group', untuk memperluas jangkauan.",
+                      },
+                      {
+                        title: "Koordinasi Brand Ambassador",
+                        desc: "Berkoordinasi dan memproduksi konten video dari Brand Ambassador.",
+                      },
+                    ].map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/10 transition-colors"
+                      >
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <h6 className="font-semibold text-white mb-2">{item.title}</h6>
+                          <p className="text-white/70 text-sm">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Content Writer */}
+            {activeSocialSection === "writer" && (
+              <div className="glass-morphism rounded-3xl p-10 hover-lift">
+                <div className="text-center mb-8">
+                  <div className="w-20 h-20 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <FileText className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-4">Content Writer</h3>
+                  <p className="text-white/80 text-lg max-w-3xl mx-auto">
+                    Sebagai arsitek narasi, bertanggung jawab atas riset, ide, perencanaan jadwal, dan pembuatan naskah
+                    yang menarik serta relevan untuk audiens Solera.
+                  </p>
+                </div>
+
+                {/* Workflow Overview */}
+                <div className="mb-12">
+                  <h4 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <TrendingUp className="w-6 h-6" />
+                    Alur Kerja & Tanggung Jawab Utama
+                  </h4>
+                  <p className="text-white/80 mb-8">
+                    Proses kerja seorang Content Writer adalah siklus berkelanjutan yang dimulai dari riset hingga
+                    penulisan akhir, memastikan setiap konten memiliki tujuan yang jelas.
+                  </p>
+
+                  <div className="space-y-8">
+                    {/* Stage 1 */}
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-yellow-500">
+                      <h5 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                        <Lightbulb className="w-6 h-6" />
+                        Tahap 1: Riset & Ideasi
+                      </h5>
+                      <p className="text-white/80 mb-4">
+                        Fondasi dari konten yang baik adalah riset yang mendalam. Tahap ini bertujuan untuk menemukan
+                        ide-ide segar yang relevan dengan audiens dan tren terkini.
+                      </p>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <strong className="text-white">Mencari referensi konten:</strong>
+                            <span className="text-white/80">
+                              {" "}
+                              Secara aktif mencari inspirasi dan referensi dari berbagai sumber, termasuk kompetitor,
+                              tren industri, dan konten yang sedang viral.
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <strong className="text-white">Menggagas Ide Viral:</strong>
+                            <span className="text-white/80">
+                              {" "}
+                              Berkolaborasi dengan tim untuk menciptakan dan memproduksi setidaknya satu ide konten
+                              dengan potensi viral setiap bulannya.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stage 2 */}
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-blue-500">
+                      <h5 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                        <Calendar className="w-6 h-6" />
+                        Tahap 2: Perencanaan & Plotting
+                      </h5>
+                      <p className="text-white/80 mb-4">
+                        Setelah ide terkumpul, tahap selanjutnya adalah menyusunnya ke dalam sebuah jadwal yang
+                        terstruktur agar publikasi konten berjalan konsisten.
+                      </p>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </div>
+                          <div>
+                            <strong className="text-white">Membuat plottingan konten:</strong>
+                            <span className="text-white/80">
+                              {" "}
+                              Menyusun jadwal editorial (content calendar) yang merinci tema konten, format (Feeds,
+                              Story, Reels), dan tanggal publikasi untuk satu periode ke depan.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stage 3 */}
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-purple-500">
+                      <h5 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                        <FileText className="w-6 h-6" />
+                        Tahap 3: Pembuatan Brief & Penulisan
+                      </h5>
+                      <p className="text-white/80 mb-4">
+                        Ini adalah tahap eksekusi di mana ide-ide abstrak diubah menjadi brief yang jelas untuk desainer
+                        dan naskah (caption) yang siap dipublikasikan.
+                      </p>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <strong className="text-white">Membuat brief konten:</strong>
+                            <span className="text-white/80">
+                              {" "}
+                              Menulis dokumen brief yang detail untuk setiap konten yang akan diproduksi, berisi tujuan,
+                              pesan kunci, referensi visual, dan call-to-action.
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <strong className="text-white">Menulis & Memeriksa Caption:</strong>
+                            <span className="text-white/80">
+                              {" "}
+                              Membuat naskah caption untuk semua postingan Instagram, serta melakukan pemeriksaan akhir
+                              untuk memastikan tata bahasa, gaya penulisan, dan informasinya sudah akurat sebelum
+                              diserahkan kepada Social Media Officer.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Team Collaboration */}
+                <div>
+                  <h4 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <Users className="w-6 h-6" />
+                    Kolaborasi Tim
+                  </h4>
+                  <p className="text-white/80 mb-6">
+                    Seorang Content Writer bekerja sama erat dengan peran lain untuk memastikan visi kreatif dapat
+                    dieksekusi dengan baik.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/10 transition-colors">
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h6 className="font-semibold text-white mb-2">Dengan Social Media Officer</h6>
+                        <p className="text-white/70 text-sm">
+                          Berdiskusi untuk memastikan ide konten yang dikembangkan selalu sejalan dengan tujuan utama
+                          (Ensure Content Ideas always Align with Objective Content).
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/10 transition-colors">
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h6 className="font-semibold text-white mb-2">Dengan Graphic Designer</h6>
+                        <p className="text-white/70 text-sm">
+                          Memberikan brief konten yang jelas dan detail agar tim desain dapat menerjemahkannya menjadi
+                          visual yang sesuai.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Graphic Designer */}
+            {activeSocialSection === "designer" && (
+              <div className="glass-morphism rounded-3xl p-10 hover-lift">
+                <div className="text-center mb-8">
+                  <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <ImageIcon className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-4">Graphic Designer</h3>
+                  <p className="text-white/80 text-lg max-w-3xl mx-auto">
+                    Sebagai penerjemah visual, bertanggung jawab untuk mengubah ide dan brief menjadi aset visual yang
+                    menarik, fungsional, dan selaras dengan identitas brand.
+                  </p>
+                </div>
+
+                {/* Design Categories */}
+                <div className="mb-12">
+                  <h4 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <ImageIcon className="w-6 h-6" />
+                    Tanggung Jawab & Kategori Desain
+                  </h4>
+                  <p className="text-white/80 mb-8">
+                    Tugas seorang Graphic Designer mencakup berbagai kebutuhan visual, baik untuk keperluan media
+                    sosial, internal perusahaan, maupun eksternal.
+                  </p>
+
+                  <div className="space-y-8">
+                    {/* Social Media Design */}
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-blue-500">
+                      <h5 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                        <Users className="w-6 h-6" />
+                        Desain Media Sosial
+                      </h5>
+                      <p className="text-white/80 mb-4">
+                        Membuat semua kebutuhan visual untuk platform Instagram berdasarkan brief dari Content Writer.
+                      </p>
+                      <div className="space-y-3">
+                        {[
+                          "Membuat Feeds Instagram: Mendesain konten visual untuk postingan di feed, baik dalam bentuk gambar tunggal maupun carousel.",
+                          "Membuat Story Instagram: Mendesain konten visual vertikal untuk Instagram Story, termasuk template untuk kuis, polling, atau pengumuman.",
+                          "Editing Video Reels Instagram: Melakukan proses penyuntingan video untuk konten Instagram Reels, termasuk menambahkan teks, musik, dan efek visual.",
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <span className="text-white/80 text-sm">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Internal Design */}
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-green-500">
+                      <h5 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                        <Store className="w-6 h-6" />
+                        Desain Internal
+                      </h5>
+                      <p className="text-white/80 mb-4">
+                        Memenuhi kebutuhan desain untuk berbagai keperluan internal perusahaan dan acara.
+                      </p>
+                      <div className="space-y-3">
+                        {[
+                          "Membuat Desain Sertifikat Acara: Mendesain sertifikat untuk acara-acara internal.",
+                          "Membuat Desain Sertifikat Apresiasi: Mendesain sertifikat penghargaan atau apresiasi untuk internal.",
+                          "Membuat Desain Hari Besar: Mendesain ucapan visual untuk hari-hari besar nasional atau keagamaan.",
+                          "Membuat Desain dari Divisi Lain: Membantu dan memenuhi permintaan kebutuhan desain dari divisi lain di perusahaan.",
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <span className="text-white/80 text-sm">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* External Design */}
+                    <div className="glass-morphism p-6 rounded-2xl border-l-4 border-purple-500">
+                      <h5 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                        <UserGraduate className="w-6 h-6" />
+                        Desain Eksternal
+                      </h5>
+                      <p className="text-white/80 mb-4">
+                        Memproduksi aset desain yang akan dilihat oleh pihak luar, seperti pemateri dan peserta acara.
+                      </p>
+                      <div className="space-y-3">
+                        {[
+                          "Membuat Desain Sertifikat Pemateri Acara: Mendesain sertifikat khusus untuk para pembicara atau pemateri.",
+                          "Membuat Desain Sertifikat Peserta Acara: Mendesain sertifikat untuk seluruh peserta yang mengikuti sebuah acara.",
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <span className="text-white/80 text-sm">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Work Principles */}
+                <div>
+                  <h4 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <Target className="w-6 h-6" />
+                    Prinsip Kerja & Kolaborasi
+                  </h4>
+                  <p className="text-white/80 mb-6">
+                    Untuk menjaga kualitas dan konsistensi, setiap desainer harus berpegang pada prinsip dan alur kerja
+                    yang telah ditetapkan.
+                  </p>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        title: "Mengikuti GDP (Good Design Practice/Guidelines)",
+                        desc: "Wajib mengikuti panduan desain dan identitas merek (brand guidelines) yang telah ditetapkan untuk memastikan semua hasil desain konsisten.",
+                      },
+                      {
+                        title: "Bekerja Berdasarkan Brief",
+                        desc: "Proses desain dimulai setelah menerima brief konten yang jelas dari Content Writer.",
+                      },
+                      {
+                        title: "Koordinasi dengan Officer",
+                        desc: "Semua hasil akhir desain memerlukan persetujuan dari Social Media Officer sebelum dipublikasikan untuk memastikan kesesuaian dengan strategi.",
+                      },
+                    ].map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/10 transition-colors"
+                      >
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <h6 className="font-semibold text-white mb-2">{item.title}</h6>
+                          <p className="text-white/70 text-sm">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Crisis Management Section */}
+        <section id="krisis" className="py-20">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-3 bg-red-500/20 px-6 py-3 rounded-full mb-6">
+                <ExclamationTriangle className="w-6 h-6 text-red-400" />
+                <span className="text-red-300 font-semibold">Emergency Protocol</span>
+              </div>
+              <h2 className="text-5xl font-bold text-white mb-4">Crisis Management Center</h2>
+              <p className="text-xl text-white/80 max-w-4xl mx-auto">
+                Protokol respons cepat untuk menjaga integritas merek selama situasi menantang dan memastikan komunikasi
+                yang tepat.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
+                {
+                  icon: ExclamationTriangle,
+                  title: "Threat Detection",
+                  description: "Sistem peringatan dini dan protokol monitoring untuk mendeteksi potensi krisis",
+                  color: "from-red-500 to-orange-500",
+                  details: [
+                    "Monitor media sosial 24/7 untuk mention negatif",
+                    "Setup Google Alerts untuk brand monitoring",
+                    "Tracking sentiment analysis real-time",
+                    "Early warning system untuk isu potensial",
+                  ],
+                },
+                {
+                  icon: Users,
+                  title: "Response Team",
+                  description:
+                    "Aktivasi tim respons krisis yang telah ditunjuk dengan peran dan tanggung jawab yang jelas",
+                  color: "from-blue-500 to-indigo-500",
+                  details: [
+                    "Crisis Manager: Koordinasi keseluruhan",
+                    "PR Specialist: Komunikasi eksternal",
+                    "Social Media Manager: Respons digital",
+                    "Legal Advisor: Aspek hukum dan compliance",
+                  ],
+                },
+                {
+                  icon: Megaphone,
+                  title: "Communication Hub",
+                  description: "Saluran resmi dan protokol pesan untuk komunikasi krisis yang efektif",
+                  color: "from-green-500 to-emerald-500",
+                  details: [
+                    "Template respons untuk berbagai skenario",
+                    "Approval workflow untuk statement resmi",
+                    "Multi-channel communication strategy",
+                    "Stakeholder notification system",
+                  ],
+                },
+                {
+                  icon: FileText,
+                  title: "Action Playbook",
+                  description: "Prosedur respons langkah demi langkah dan template untuk berbagai skenario krisis",
+                  color: "from-purple-500 to-pink-500",
+                  details: [
+                    "Escalation matrix berdasarkan severity",
+                    "Timeline respons untuk setiap level krisis",
+                    "Post-crisis evaluation checklist",
+                    "Recovery dan rebuilding strategy",
+                  ],
+                },
+              ].map((protocol, index) => (
+                <div key={index} className="glass-morphism rounded-3xl p-8 hover-lift">
+                  <div
+                    className={`w-16 h-16 bg-gradient-to-r ${protocol.color} rounded-2xl flex items-center justify-center mb-6`}
+                  >
+                    <protocol.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-4">{protocol.title}</h3>
+                  <p className="text-white/70 mb-6">{protocol.description}</p>
+
+                  <div className="space-y-2 mb-6">
+                    {protocol.details.map((detail, idx) => (
+                      <div key={idx} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-gradient-to-r from-white to-white/60 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-white/80 text-sm">{detail}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button className="w-full bg-white/10 hover:bg-white/20 text-white py-3 px-6 rounded-xl transition-all duration-300 hover-lift">
+                    Access Protocol
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Crisis Severity Levels */}
+            <div className="mt-16 glass-morphism rounded-3xl p-10">
+              <h3 className="text-3xl font-bold text-white mb-8 text-center">Crisis Severity Levels</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    level: "Level 1 - Low",
+                    color: "from-yellow-500 to-orange-500",
+                    description: "Minor issues, isolated complaints",
+                    response: "Standard customer service response within 2 hours",
+                    examples: ["Individual user complaints", "Minor technical issues", "Isolated negative reviews"],
+                  },
+                  {
+                    level: "Level 2 - Medium",
+                    color: "from-orange-500 to-red-500",
+                    description: "Moderate impact, multiple complaints",
+                    response: "Management involvement, response within 1 hour",
+                    examples: ["Multiple user complaints", "Service disruptions", "Negative media coverage"],
+                  },
+                  {
+                    level: "Level 3 - High",
+                    color: "from-red-500 to-red-700",
+                    description: "Severe impact, potential reputation damage",
+                    response: "Full crisis team activation, immediate response",
+                    examples: ["Viral negative content", "Security breaches", "Legal issues"],
+                  },
+                ].map((level, index) => (
+                  <div key={index} className="glass-morphism p-6 rounded-2xl border-l-4 border-red-500">
+                    <div className={`w-full h-2 bg-gradient-to-r ${level.color} rounded-full mb-4`}></div>
+                    <h4 className="text-lg font-bold text-white mb-3">{level.level}</h4>
+                    <p className="text-white/80 mb-4">{level.description}</p>
+                    <div className="mb-4">
+                      <h5 className="font-semibold text-white mb-2">Response Time:</h5>
+                      <p className="text-white/70 text-sm">{level.response}</p>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-white mb-2">Examples:</h5>
+                      <ul className="text-white/70 text-sm space-y-1">
+                        {level.examples.map((example, idx) => (
+                          <li key={idx}>• {example}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="py-12 text-center glass-morphism border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-white/70" />
+            <p className="text-white/70">Powered by Innovation & Creativity</p>
+            <Sparkles className="w-5 h-5 text-white/70" />
+          </div>
+          <p className="text-white/50">&copy; 2025 PT. Solera Crypto Network. Futuristic Marketing Portal.</p>
+        </div>
+      </footer>
+    </div>
+  )
+}
