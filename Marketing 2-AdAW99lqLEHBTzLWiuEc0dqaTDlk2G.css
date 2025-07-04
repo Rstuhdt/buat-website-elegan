@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Dokumen Strategi Marketing - Solera</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =================================
+           1. GLOBAL STYLING & VARIABLES
+           ================================= */
+        :root {
+            --bg-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --primary-color: #2c3e50; /* Elegant dark blue/grey */
+            --secondary-color: #3498db; /* Professional blue */
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        section {
+            padding: 5rem 0;
+        }
+
+        /* =================================
+           2. HEADER & NAVIGATION
+           ================================= */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+            background-color: #e9ecef;
+        }
+        
+        nav a.active {
+            color: var(--surface-color);
+            background-color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* =================================
+           3. GENERAL STYLING FOR CONTENT
+           ================================= */
+        .page-header {
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+        .page-header h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+        .strategy-article {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.05);
+            margin-bottom: 3rem;
+        }
+        .strategy-article h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        .strategy-article h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .strategy-article ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .strategy-article ul li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+        .strategy-article ul li::before {
+            content: '\f101';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+        }
+        blockquote {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #ecf0f1;
+            border-left: 5px solid #bdc3c7;
+            font-style: italic;
+        }
+
+        /* =================================
+           4. HUB & ROADMAP STYLES
+           ================================= */
+        .doc-hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .doc-card {
+            display: flex; align-items: flex-start; padding: 1.5rem;
+            background-color: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: 8px; text-decoration: none; color: inherit; transition: all 0.3s ease;
+        }
+        .doc-card:hover { transform: translateY(-5px); box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: var(--secondary-color); }
+        .doc-card-icon { font-size: 2rem; color: var(--secondary-color); margin-right: 1.5rem; margin-top: 0.25rem; }
+        .doc-card-content h4 { font-size: 1.3rem; margin: 0 0 0.5rem 0; color: var(--primary-color); }
+        .doc-card-content p { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+
+        .roadmap-container::before { content: ''; position: absolute; top: 0; left: 45px; height: 100%; width: 3px; background-color: #dbe2e8; }
+        .roadmap-phase { display: flex; position: relative; margin-bottom: 3rem; }
+        .phase-icon { position: absolute; left: 0; top: 0; display: flex; flex-direction: column; align-items: center; }
+        .phase-icon i { width: 90px; height: 90px; border-radius: 50%; background-color: var(--secondary-color); color: white; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; border: 5px solid var(--surface-color); box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 2; }
+        .phase-content { margin-left: 120px; padding: 1.5rem; background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 8px; width: 100%; }
+
+        /* =================================
+           5. MILESTONE & CHECKLIST STYLES
+           ================================= */
+        .milestone-container { display: flex; justify-content: space-between; margin: 2rem 0; }
+        .milestone-item { text-align: center; width: 22%; }
+        .milestone-icon { width: 80px; height: 80px; border-radius: 50%; background-color: #f0f0f0; border: 3px solid var(--secondary-color); color: var(--secondary-color); font-size: 2rem; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; }
+        .milestone-item h4 { font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .milestone-item p { font-size: 0.9rem; color: var(--text-secondary); }
+        .milestone-connector { flex-grow: 1; height: 3px; background-color: #dbe2e8; margin: 40px -15px 0; }
+        
+        .table-wrapper { overflow-x: auto; }
+        .preparation-table { width: 100%; border-collapse: collapse; margin-top: 2rem; font-size: 0.95rem; }
+        .preparation-table th, .preparation-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
+        .preparation-table th { background-color: #f4f7f9; font-weight: 600; color: var(--primary-color); }
+        .preparation-table tr:hover { background-color: #f8f9fa; }
+        .preparation-table .task-checkbox { width: 18px; height: 18px; cursor: pointer; }
+        .preparation-table tr.completed td { text-decoration: line-through; color: #95a5a6; }
+        .preparation-table tr.completed { background-color: #f1f2f6; }
+        .category-header td { font-weight: 700; background-color: #e9ecef; color: #495057; font-size: 1rem; }
+
+        /* =================================
+           6. FOOTER
+           ================================= */
+        .main-footer {
+            padding: 3rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 5rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1>Master Dokumen Strategi</h1>
+            <nav>
+                <ul>
+                    <li><a href="#hub" class="nav-link active">Hub</a></li>
+                    <li><a href="#roadmap" class="nav-link">Roadmap</a></li>
+                    <li><a href="#milestone" class="nav-link">Milestone</a></li>
+                    <li><a href="#strategi" class="nav-link">Strategi</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <section id="hub">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Pusat Dokumen Strategi Marketing</h2>
+                    <p>Kumpulan panduan strategis dan taktis yang mendalam untuk Divisi Marketing Solera. Gunakan dokumen ini sebagai referensi utama dalam perencanaan dan eksekusi kampanye.</p>
+                </div>
+                <div class="doc-hub-grid">
+                    <a href="#roadmap" class="doc-card">
+                        <div class="doc-card-icon"><i class="fas fa-map-signs"></i></div>
+                        <div class="doc-card-content"><h4>Roadmap Tim Marketing</h4><p>Visualisasi perjalanan strategis tim dari fase persiapan, peluncuran, optimalisasi, hingga ekspansi di masa depan.</p></div>
+                    </a>
+                    <a href="#strategi" class="doc-card">
+                        <div class="doc-card-icon"><i class="fas fa-comments"></i></div>
+                        <div class="doc-card-content"><h4>Detail Strategi & Rencana</h4><p>Panduan lengkap untuk komunikasi, pengembangan materi, promosi, dan akuisisi pengguna.</p></div>
+                    </a>
+                    <a href="#milestone" class="doc-card" style="grid-column: 1 / -1;">
+                        <div class="doc-card-icon" style="color: #c0392b;"><i class="fas fa-tasks"></i></div>
+                        <div class="doc-card-content"><h4>Milestone & Checklist Persiapan</h4><p>Pusat kendali operasional untuk melacak semua tugas dari awal hingga akhir, lengkap dengan checklist interaktif.</p></div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Roadmap Strategis Tim Marketing</h2>
+                    <p>Sebuah panduan visual perjalanan dari persiapan awal hingga ekspansi di masa depan, memastikan setiap langkah selaras dengan visi besar Solera.</p>
+                </div>
+                <div class="roadmap-container">
+                    <div class="roadmap-phase"><div class="phase-icon"><i class="fas fa-drafting-compass"></i></div><div class="phase-content"><h3>Fase 1: Persiapan & Fondasi</h3><p>Membangun dasar yang kokoh dengan menyelaraskan strategi, menyiapkan materi, dan memahami pasar secara mendalam.</p></div></div>
+                    <div class="roadmap-phase"><div class="phase-icon"><i class="fas fa-rocket"></i></div><div class="phase-content"><h3>Fase 2: Peluncuran & Adopsi Awal</h3><p>Fokus pada eksekusi peluncuran di SMAN 2 Cibinong, mendorong adopsi, dan membangun citra merek yang positif.</p></div></div>
+                    <div class="roadmap-phase"><div class="phase-icon"><i class="fas fa-chart-line"></i></div><div class="phase-content"><h3>Fase 3: Optimalisasi & Pertumbuhan</h3><p>Menganalisis data, menyempurnakan strategi berdasarkan umpan balik, dan memaksimalkan engagement.</p></div></div>
+                    <div class="roadmap-phase"><div class="phase-icon"><i class="fas fa-expand-arrows-alt"></i></div><div class="phase-content"><h3>Fase 4: Ekspansi & Skalabilitas</h3><p>Menggunakan keberhasilan awal sebagai model dan fondasi untuk ekspansi ke sekolah-sekolah lain.</p></div></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="milestone">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Milestone & Checklist Persiapan</h2>
+                    <p>Panduan operasional untuk melacak setiap tugas persiapan peluncuran Solera School Marketplace secara detail dan terstruktur.</p>
+                </div>
+                <article class="strategy-article">
+                    <h3>Visualisasi Milestone Utama</h3>
+                    <div class="milestone-container">
+                        <div class="milestone-item"><div class="milestone-icon"><i class="fas fa-clipboard-list"></i></div><h4>Kick-off & Perencanaan</h4><p>Penetapan strategi, KPI, dan alur kerja.</p></div>
+                        <div class="milestone-connector"></div>
+                        <div class="milestone-item"><div class="milestone-icon"><i class="fas fa-paint-brush"></i></div><h4>Produksi & Persiapan</h4><p>Pembuatan semua aset pemasaran.</p></div>
+                        <div class="milestone-connector"></div>
+                        <div class="milestone-item"><div class="milestone-icon"><i class="fas fa-rocket"></i></div><h4>Peluncuran & Aktivasi</h4><p>Eksekusi seminar dan promosi di lapangan.</p></div>
+                        <div class="milestone-connector"></div>
+                        <div class="milestone-item"><div class="milestone-icon"><i class="fas fa-chart-bar"></i></div><h4>Evaluasi & Optimalisasi</h4><p>Analisis data dan iterasi strategi.</p></div>
+                    </div>
+                </article>
+                <article class="strategy-article">
+                    <h3>Checklist Persiapan Detail</h3>
+                    <p>Gunakan tabel di bawah ini untuk melacak status penyelesaian setiap tugas. Klik checkbox untuk menandai tugas sebagai "Selesai".</p>
+                    <div class="table-wrapper">
+                        <table class="preparation-table">
+                            <thead><tr><th>Status</th><th>Kategori</th><th>Tugas Spesifik</th><th>PIC</th><th>Catatan</th></tr></thead>
+                            <tbody>
+                                <tr class="category-header"><td colspan="5">A. Perencanaan Strategis & Seminar</td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Seminar</td><td>Merancang materi presentasi seminar yang menarik dan edukatif.</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Seminar</td><td>Memastikan semua logistik pemasaran seminar siap (materi cetak, visual).</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Strategi</td><td>Menjalin komunikasi proaktif dengan pimpinan sekolah.</td><td></td><td></td></tr>
+                                <tr class="category-header"><td colspan="5">B. Pengembangan Aset Pemasaran</td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Aset Fisik</td><td>Mendesain dan mencetak materi (poster, pamflet, spanduk).</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Aset Fisik</td><td>Mendesain dan memproduksi merchandise (kaos, pin, topi).</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Aset Digital</td><td>Menyiapkan konten awal untuk Website dan Media Sosial (TikTok).</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Aset Digital</td><td>Memproduksi video tutorial penggunaan platform.</td><td></td><td></td></tr>
+                                <tr class="category-header"><td colspan="5">C. Pelaksanaan Promosi & Akuisisi</td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Promosi</td><td>Menetapkan skema program promosi dan diskon awal.</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Akuisisi</td><td>Menyiapkan posko bantuan (helpdesk) untuk pendaftaran langsung.</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Akuisisi</td><td>Merekrut dan memberi pengarahan untuk program Solera Ambassador.</td><td></td><td></td></tr>
+                                <tr class="category-header"><td colspan="5">D. Branding & Hubungan Masyarakat</td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Branding</td><td>Mengembangkan narasi konsisten "Pionir Digital Marketplace untuk Sekolah".</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Humas</td><td>Menyiapkan protokol dan tim respons krisis internal.</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Komunitas</td><td>Menjalin kerja sama dengan OSIS untuk cross-promotion.</td><td></td><td></td></tr>
+                                <tr class="category-header"><td colspan="5">E. Umpan Balik & Pelaporan</td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Feedback</td><td>Menyiapkan kotak saran fisik dan formulir digital.</td><td></td><td></td></tr>
+                                <tr><td><input type="checkbox" class="task-checkbox"></td><td>Pelaporan</td><td>Menyiapkan template laporan harian dan mingguan.</td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+        
+        <section id="strategi">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Detail Strategi & Rencana Aksi</h2>
+                    <p>Penjabaran mendalam mengenai pilar-pilar strategi, komunikasi, dan rencana promosi untuk panduan eksekusi.</p>
+                </div>
+                <article class="strategy-article">
+                    <h3>Strategi Komunikasi & Edukasi</h3>
+                    <p>Panduan untuk menyampaikan nilai Solera, membangun pemahaman, dan mendorong minat di lingkungan sekolah.</p>
+                    <h4>Perencanaan Seminar Edukasi</h4>
+                    <p>Seminar adalah titik kontak pertama yang krusial. Tujuannya adalah menciptakan brand awareness, membangun antusiasme, dan memosisikan Solera sebagai solusi modern melalui acara tatap muka di aula sekolah.</p>
+                    <h4>Pengembangan Materi Edukasi</h4>
+                    <p>Materi pendukung yang mudah diakses sangat penting. Ini mencakup video tutorial fitur kunci di YouTube, konten media sosial interaktif untuk Gen Z di TikTok/Instagram, dan materi fisik (poster, spanduk) di titik strategis.</p>
+                    <h4>Pelibatan Pemangku Kepentingan</h4>
+                    <p>Mendapatkan dukungan dari dalam adalah kunci. Ini dilakukan melalui komunikasi strategis dengan manajemen sekolah untuk endorsement resmi dan pemberdayaan OSIS sebagai mitra pemasaran.</p>
+                </article>
+                <article class="strategy-article">
+                    <h3>Rencana Promosi & Akuisisi Pengguna</h3>
+                    <p>Playbook untuk menciptakan gelombang adopsi yang cepat dan masif di SMAN 2 Cibinong.</p>
+                    <h4>Program Promosi Awal</h4>
+                    <p>Taktik *pull marketing* untuk memicu transaksi perdana, seperti diskon pengguna baru, promosi fitur unggulan (pre-order & cashless), dan cashback berbatas waktu untuk menciptakan urgensi (FOMO).</p>
+                    <h4>Fitur Iklan Internal</h4>
+                    <p>Memberdayakan UMKM pelajar dengan paket iklan terjangkau di platform (mulai dari Rp7.000/hari) untuk meningkatkan visibilitas produk mereka dan menunjukkan ekosistem yang dinamis.</p>
+                    <h4>Akuisisi & Engagement di Sekolah</h4>
+                    <p>Membangun basis pengguna yang kuat melalui bantuan pendaftaran langsung di posko, kompetisi interaktif ("Pengguna Cashless Terbanyak"), dan memaksimalkan program Solera Ambassador.</p>
+                    <h4>Sistem Loyalitas (Jangka Panjang)</h4>
+                    <p>Secara bertahap memperkenalkan konsep program loyalitas berbasis poin (tanpa jargon teknis) untuk membangun antisipasi dan daya tarik jangka panjang bagi pengguna.</p>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 PT. Solera Crypto Network. Master Dokumen Strategi Divisi Marketing.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Navigasi Smooth Scroll & Active Link Highlighting ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+
+            // Fungsi untuk menyorot link navigasi yang aktif
+            const activateNavLink = () => {
+                let currentSectionId = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        currentSectionId = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', activateNavLink);
+
+            // Fungsi untuk smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+
+            // --- 2. Logika untuk Checklist Interaktif ---
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const tableRow = e.target.closest('tr');
+                    if (e.target.checked) {
+                        tableRow.classList.add('completed');
+                    } else {
+                        tableRow.classList.remove('completed');
+                    }
+                });
+            });
+
+            // Panggil fungsi aktivasi saat halaman dimuat untuk memastikan link benar saat pertama kali dibuka
+            activateNavLink();
+        });
+    </script>
+
+</body>
+</html>
