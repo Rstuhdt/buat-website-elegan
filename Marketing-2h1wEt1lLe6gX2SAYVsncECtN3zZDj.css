@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Marketing - Solera School Marketplace</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =================================
+           1. CSS RESET & GLOBAL VARIABLES
+           ================================= */
+        :root {
+            --bg-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --primary-color: #3a5a40; /* Elegant deep green */
+            --secondary-color: #588157; /* Softer green */
+            --accent-color: #a3b18a; /* Muted accent green */
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --danger-color: #c94040;
+
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        section {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+
+        /* =================================
+           2. HEADER & NAVIGATION
+           ================================= */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo img {
+            height: 40px;
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            border-radius: 8px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+        }
+        
+        nav a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* =================================
+           3. DASHBOARD SECTION
+           ================================= */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .welcome-banner h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+        }
+
+        .welcome-banner p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 1rem auto 1.5rem;
+            opacity: 0.9;
+        }
+        
+        .welcome-banner cite {
+            font-style: normal;
+            font-weight: 600;
+        }
+        
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .quick-access-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-access-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-color);
+        }
+        
+        .quick-access-card i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .quick-access-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-access-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .crisis-link-section {
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        .crisis-link-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border: 2px solid var(--danger-color);
+            color: var(--danger-color);
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .crisis-link-btn:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+
+        /* =================================
+           4. STRATEGY SECTION
+           ================================= */
+        .strategy-layout {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .strategy-sidebar {
+            flex: 0 0 250px;
+            position: sticky;
+            top: 120px;
+            align-self: flex-start;
+        }
+
+        .strategy-sidebar ul {
+            list-style: none;
+        }
+
+        .strategy-sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .strategy-sidebar a:hover {
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+        }
+        
+        .strategy-sidebar a.active {
+            background-color: var(--surface-color);
+            border-color: var(--border-color);
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .strategy-content {
+            flex: 1;
+        }
+
+        .strategy-item {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .strategy-item:last-child { border-bottom: none; }
+        
+        .strategy-item h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .strategy-item h3 i {
+            margin-right: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .strategy-item ul {
+            list-style-type: none;
+            padding-left: 1rem;
+        }
+        
+        .strategy-item li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .strategy-item li::before {
+            content: "\f00c"; /* Font Awesome check icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: var(--accent-color);
+            position: absolute;
+            left: 0;
+            top: 4px;
+        }
+        
+        .info-box {
+            background-color: #e9f5e9;
+            border-left: 5px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .info-box p { margin: 0; }
+        .info-box a { font-weight: 600; text-decoration: none; color: var(--primary-color); }
+
+        /* =================================
+           5. KPI & REPORTING SECTION
+           ================================= */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .kpi-card {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .kpi-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .kpi-card .metric-group {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-grow: 1;
+        }
+        
+        .progress-container {
+            margin-top: 1.5rem;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .progress-bar-bg {
+            background-color: var(--bg-color);
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            height: 100%;
+            width: 0;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .kpi-footer {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+        
+        .reporting-section {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-top: 4rem;
+        }
+
+        .reporting-section h3 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+        .reporting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .reporting-card { padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
+        .reporting-card h4 { font-size: 1.1rem; }
+        .reporting-card p { font-size: 0.9rem; color: var(--text-secondary); }
+        .btn-resource { margin-top: 1rem; }
+
+        /* =================================
+           6. TIMELINE SECTION
+           ================================= */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background-color: var(--border-color);
+            top: 0;
+            bottom: 0;
+            left: 20px;
+        }
+
+        .timeline-item-wrapper {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 43px;
+            height: 43px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            font-size: 1.2rem;
+        }
+
+        .timeline-content {
+            background-color: var(--surface-color);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .timeline-content h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        
+        /* =================================
+           7. ASSET & AUDIENCE SECTION
+           ================================= */
+        .asset-grid, .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .asset-card {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .asset-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+        .asset-card img { width: 100%; height: 180px; object-fit: cover; background-color: var(--bg-color); }
+        .asset-info { padding: 1.5rem; }
+        .asset-info h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .asset-info p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+        
+        .persona-card {
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--surface-color);
+            overflow: hidden;
+        }
+        .persona-header { padding: 2rem; color: white; text-align: center; }
+        .persona-header.siswa { background-color: var(--secondary-color); }
+        .persona-header.guru { background-color: #5d5d81; }
+        .persona-header.umkm { background-color: #d35400; }
+        .persona-header i { font-size: 2.5rem; margin-bottom: 1rem; }
+        .persona-header h3 { font-size: 1.5rem; margin: 0; }
+        .persona-body { padding: 1.5rem; }
+        .persona-body ul li::before { content: "\f14a"; } /* check-square icon */
+
+
+        /* =================================
+           8. CRISIS SECTION
+           ================================= */
+        .accordion { max-width: 900px; margin: 0 auto; }
+        .accordion-item { border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 1rem; overflow: hidden; }
+        .accordion-header {
+            width: 100%; background-color: var(--surface-color);
+            padding: 1.25rem 1.5rem; font-size: 1.1rem;
+            font-weight: 600; border: none; text-align: left;
+            cursor: pointer; display: flex; justify-content: space-between;
+            align-items: center; transition: background-color 0.3s ease;
+        }
+        .accordion-header:hover { background-color: var(--bg-color); }
+        .accordion-header .fa-chevron-down { transition: transform 0.3s; }
+        .accordion-header.active .fa-chevron-down { transform: rotate(180deg); }
+        .accordion-content {
+            padding: 0 1.5rem; max-height: 0;
+            overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+        }
+        .accordion-content-inner { padding: 1.5rem 0; }
+        .accordion-content p { margin-bottom: 1rem; }
+
+
+        /* =================================
+           9. FOOTER
+           ================================= */
+        .main-footer {
+            padding: 3rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <a href="#dashboard" class="logo">
+                <img src="https://i.ibb.co/6y4b1J2/solera-logo.png" alt="Logo Solera">
+                <h1>Portal Marketing</h1>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#dashboard" class="nav-link active">Dasbor</a></li>
+                    <li><a href="#strategi" class="nav-link">Strategi</a></li>
+                    <li><a href="#kpi" class="nav-link">Kinerja</a></li>
+                    <li><a href="#linimasa" class="nav-link">Linimasa</a></li>
+                    <li><a href="#aset" class="nav-link">Aset</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="dashboard">
+            <div class="container">
+                <div class="welcome-banner">
+                    <h2>Bergerak Cerdas, Bukan Hanya Cepat</h2>
+                    <p>"Kita telah sampai di akhir pedoman ini, namun ini adalah awal dari perjalanan kita. [cite_start]Mari kita tunjukkan bahwa Solera adalah solusi terbaik untuk SMAN 2 Cibinong dan wujudkan visi besar ini bersama." [cite: 338, 349, 351]</p>
+                    <cite>- Restu Hidayat, CEO</cite>
+                </div>
+
+                <div class="quick-access-grid">
+                    <a href="#strategi" class="quick-access-card">
+                        <i class="fa-solid fa-compass-drafting"></i>
+                        <h4>Pilar Strategi</h4>
+                        <p>Pahami 5 pilar utama yang menjadi fondasi kampanye kita.</p>
+                    </a>
+                    <a href="#kpi" class="quick-access-card">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <h4>Kinerja & KPI</h4>
+                        <p>Lacak progres pencapaian target peluncuran secara real-time.</p>
+                    </a>
+                    <a href="#audiens" class="quick-access-card">
+                        <i class="fa-solid fa-users"></i>
+                        <h4>Profil Audiens</h4>
+                        <p>Kenali siapa Siswa, Guru, dan UMKM Pelajar yang kita sasar.</p>
+                    </a>
+                    <a href="#aset" class="quick-access-card">
+                        <i class="fa-solid fa-photo-film"></i>
+                        <h4>Pustaka Aset</h4>
+                        <p>Unduh semua materi pemasaran resmi yang siap digunakan.</p>
+                    </a>
+                </div>
+
+                <div class="crisis-link-section">
+                    <a href="#krisis" class="crisis-link-btn">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Akses Protokol Komunikasi Krisis
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategi">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Pilar Strategi Pemasaran</h2>
+                    <p>Fondasi untuk membangun merek, mengedukasi pasar, dan mendorong adopsi platform Solera.</p>
+                </div>
+                <div class="strategy-layout">
+                    <aside class="strategy-sidebar">
+                        <ul>
+                            <li><a href="#strategi-konten" class="sidebar-link active"><i class="fa-solid fa-lightbulb"></i> Konten</a></li>
+                            <li><a href="#strategi-komunitas" class="sidebar-link"><i class="fa-solid fa-users"></i> Komunitas</a></li>
+                            <li><a href="#strategi-kemitraan" class="sidebar-link"><i class="fa-solid fa-handshake"></i> Kemitraan</a></li>
+                            <li><a href="#strategi-digital" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> Digital</a></li>
+                            <li><a href="#strategi-pr" class="sidebar-link"><i class="fa-solid fa-bullhorn"></i> Humas</a></li>
+                        </ul>
+                    </aside>
+                    <div class="strategy-content">
+                        <div class="info-box">
+                           <p>Setiap strategi harus selaras dengan target pasar kita. <a href="#audiens">Lihat Profil Target Audiens di sini &rarr;</a></p>
+                        </div>
+                        <div id="strategi-konten" class="strategy-item">
+                            <h3><i class="fas fa-lightbulb"></i> Pemasaran Konten Edukatif</h3>
+                            [cite_start]<p>Menyoroti bagaimana Solera menjawab tantangan nyata di sekolah: antrean panjang, transaksi tunai, dan kurangnya promosi UMKM pelajar. [cite: 143]</p>
+                            <ul>
+                                [cite_start]<li><strong>Video Pendek:</strong> Membuat konten 15-60 detik untuk TikTok & Instagram, seperti video "sebelum-sesudah". [cite: 144, 145]</li>
+                                [cite_start]<li><strong>Infografis & Artikel:</strong> Menjelaskan manfaat platform secara mendalam melalui website Solera. [cite: 146]</li>
+                            </ul>
+                        </div>
+                        <div id="strategi-komunitas" class="strategy-item">
+                           <h3><i class="fas fa-users"></i> Community Engagement</h3>
+                           <p>Interaksi langsung dengan komunitas sekolah untuk membangun kepercayaan dan mendorong adopsi melalui kegiatan di lapangan.</p>
+                           <ul>
+                               [cite_start]<li><strong>Seminar & Workshop:</strong> Mengedukasi manfaat digitalisasi dan memberikan workshop interaktif bagi UMKM. [cite: 152, 153]</li>
+                               [cite_start]<li><strong>Solera Ambassador:</strong> Merekrut siswa proaktif sebagai "wajah" merek di sekolah. [cite: 155]</li>
+                               [cite_start]<li><strong>Posko Bantuan On-Site:</strong> Menyiapkan posko di area strategis seperti kantin untuk membangun kepercayaan. [cite: 160]</li>
+                           </ul>
+                        </div>
+                        <div id="strategi-kemitraan" class="strategy-item">
+                           <h3><i class="fas fa-handshake"></i> Kemitraan Strategis</h3>
+                           <p>Membangun hubungan dengan pihak kunci untuk meningkatkan kredibilitas dan mempermudah implementasi.</p>
+                           <ul>
+                               [cite_start]<li><strong>Institusional Sekolah:</strong> Mendapatkan dukungan resmi dari manajemen sekolah. [cite: 169]</li>
+                               [cite_start]<li><strong>UMKM Unggulan:</strong> Menampilkan kisah sukses UMKM pelajar sebagai testimoni. [cite: 171, 172]</li>
+                               [cite_start]<li><strong>Organisasi Siswa:</strong> Bekerja sama dengan OSIS untuk promosi silang dan event bersama. [cite: 174]</li>
+                           </ul>
+                        </div>
+                        <div id="strategi-digital" class="strategy-item">
+                           <h3><i class="fas fa-chart-line"></i> Pemasaran Digital</h3>
+                           <p>Memastikan Solera mudah ditemukan dan menjangkau target audiens dengan pesan yang tepat.</p>
+                           <ul>
+                               [cite_start]<li><strong>SEO & ASO:</strong> Optimalisasi website dan aplikasi dengan kata kunci seperti "aplikasi kantin sekolah". [cite: 178]</li>
+                               [cite_start]<li><strong>Iklan Bertarget:</strong> Menjalankan iklan di TikTok dan Instagram Ads dengan penargetan presisi. [cite: 181]</li>
+                               [cite_start]<li><strong>Iklan Internal:</strong> Mendorong UMKM memanfaatkan fitur iklan di dalam platform Solera. [cite: 185]</li>
+                           </ul>
+                        </div>
+                        <div id="strategi-pr" class="strategy-item">
+                           <h3><i class="fas fa-bullhorn"></i> Public Relations & Humas</h3>
+                           <p>Membangun narasi konsisten tentang Solera sebagai inovator yang memberdayakan generasi muda.</p>
+                           <ul>
+                               [cite_start]<li><strong>Narasi Merek:</strong> Mengembangkan narasi "Pionir Digital Marketplace untuk Sekolah". [cite: 194]</li>
+                               [cite_start]<li><strong>Siaran Pers:</strong> Mengirimkan siaran pers ke media pendidikan dan teknologi tentang dampak positif proyek. [cite: 197, 198]</li>
+                           </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kpi">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Kinerja & Pelaporan</h2>
+                    <p>Pantau Indikator Kinerja Utama (KPI) dan ikuti prosedur pelaporan untuk memastikan setiap data ditindaklanjuti.</p>
+                </div>
+                <div class="kpi-grid" id="kpi-grid-container">
+                    </div>
+                
+                <div class="reporting-section">
+                    <h3>Pusat Pelaporan</h3>
+                    <p>Data adalah awal. Tindak lanjuti setiap KPI dengan prosedur yang tepat untuk menutup siklus umpan balik.</p>
+                    <div class="reporting-grid">
+                        <div class="reporting-card">
+                            <h4>Feedback Cepat</h4>
+                            [cite_start]<p>Gunakan wawancara, observasi, dan kotak saran untuk insight kualitatif pasca-peluncuran. [cite: 266]</p>
+                            <a href="https://docs.google.com/forms/u/0/?tgif=d" target="_blank" class="btn btn-primary btn-resource" style="font-size: 0.9rem; padding: 0.5rem 1rem;"><i class="fab fa-wpforms"></i> Contoh Form</a>
+                        </div>
+                        <div class="reporting-card">
+                            <h4>Laporan Rutin</h4>
+                            [cite_start]<p>Susun laporan harian (quick check-in) dan mingguan (deep dive) untuk evaluasi berkelanjutan. [cite: 288, 312]</p>
+                            <a href="#" class="btn btn-primary btn-resource" style="font-size: 0.9rem; padding: 0.5rem 1rem;"><i class="fas fa-file-word"></i> Unduh Template</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="linimasa">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Linimasa Kritis</h2>
+                    <p>Panduan langkah demi langkah untuk setiap tahap peluncuran Solera di SMAN 2 Cibinong.</p>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item-wrapper">
+                        <div class="timeline-icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="timeline-content">
+                            <h3>Minggu ke-1: Pra-Peluncuran & Seminar</h3>
+                            [cite_start]<p>Fokus pada perancangan materi, penyiapan logistik, dan mendorong partisipasi untuk memperkenalkan platform kepada seluruh warga sekolah. [cite: 103, 105, 106, 107, 108]</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item-wrapper">
+                        <div class="timeline-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div class="timeline-content">
+                            <h3>3-5 Hari Pasca-Seminar: Pelatihan</h3>
+                            [cite_start]<p>Mendukung tim operasional dalam penyampaian materi pelatihan kepada UMKM dan kurir, dengan fokus pada nilai jual platform. [cite: 118]</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item-wrapper">
+                        <div class="timeline-icon"><i class="fas fa-users-cog"></i></div>
+                        <div class="timeline-content">
+                            <h3>Minggu ke-2: Uji Coba & Feedback</h3>
+                            [cite_start]<p>Berinteraksi langsung dengan pengguna uji coba untuk mengamati UX dan mengumpulkan feedback awal untuk iterasi kampanye pemasaran. [cite: 121, 122]</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item-wrapper">
+                        <div class="timeline-icon"><i class="fas fa-rocket"></i></div>
+                        <div class="timeline-content">
+                            <h3>Minggu ke-3: Implementasi Penuh</h3>
+                            [cite_start]<p>Memastikan platform diterapkan di seluruh sekolah dan terus aktif mengumpulkan feedback untuk peningkatan berkelanjutan. [cite: 126, 128]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="aset">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Pustaka Aset & Profil Audiens</h2>
+                    <p>Semua materi siap pakai dan pemahaman mendalam tentang target pasar kita dalam satu tempat.</p>
+                </div>
+                
+                <h3 style="text-align:center; font-size: 1.8rem; margin-bottom: 2rem;">Pustaka Aset</h3>
+                <div class="asset-grid">
+                    <div class="asset-card">
+                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Konten Media Sosial">
+                        <div class="asset-info">
+                            <h4>Konten Media Sosial</h4>
+                            [cite_start]<p>Paket konten visual untuk TikTok dan Instagram, termasuk infografis dan template video. [cite: 35]</p>
+                            <a href="#" class="btn btn-primary">Unduh Paket</a>
+                        </div>
+                    </div>
+                    <div class="asset-card">
+                        <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Video Tutorial">
+                        <div class="asset-info">
+                            <h4>Video Tutorial</h4>
+                            [cite_start]<p>Video panduan penggunaan fitur kunci seperti cashless, pre-order, dan pendaftaran UMKM. [cite: 36]</p>
+                            <a href="#" class="btn btn-primary">Lihat di YouTube</a>
+                        </div>
+                    </div>
+                    <div class="asset-card">
+                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Materi Fisik">
+                        <div class="asset-info">
+                            <h4>Materi Fisik</h4>
+                            [cite_start]<p>File desain resolusi tinggi untuk poster, spanduk, dan merchandise Solera Ambassador. [cite: 37, 205]</p>
+                            <a href="#" class="btn btn-primary">Unduh Desain (.zip)</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="audiens" style="padding-top: 5rem;">
+                    <h3 style="text-align:center; font-size: 1.8rem; margin-bottom: 2rem;">Profil Target Audiens</h3>
+                    <div class="persona-grid">
+                        <div class="persona-card">
+                            <div class="persona-header siswa">
+                                <i class="fas fa-user-graduate"></i>
+                                <h3>Siswa</h3>
+                            </div>
+                            <div class="persona-body">
+                                <h4>Karakteristik</h4>
+                                [cite_start]<p>Generasi Z yang akrab teknologi, konsumen utama layanan pemesanan makanan, dan mencari efisiensi. [cite: 133, 134]</p>
+                                <h4>Solusi Solera</h4>
+                                [cite_start]<p>Fitur pre-order dan cashless mengatasi antrean panjang dan memudahkan transaksi. [cite: 133]</p>
+                            </div>
+                        </div>
+                        <div class="persona-card">
+                            <div class="persona-header guru">
+                                <i class="fas fa-chalkboard-user"></i>
+                                <h3>Guru & Staf</h3>
+                            </div>
+                            <div class="persona-body">
+                                <h4>Karakteristik</h4>
+                                [cite_start]<p>Pengguna potensial layanan pemesanan dan cashless, serta berperan sebagai influencer di ekosistem sekolah. [cite: 136]</p>
+                                <h4>Solusi Solera</h4>
+                                <p>Memberikan efisiensi waktu dan kemudahan transaksi digital di tengah kesibukan.</p>
+                            </div>
+                        </div>
+                        <div class="persona-card">
+                            <div class="persona-header umkm">
+                                <i class="fas fa-store"></i>
+                                <h3>UMKM Pelajar</h3>
+                            </div>
+                            <div class="persona-body">
+                                <h4>Karakteristik</h4>
+                                [cite_start]<p>Merchant yang membutuhkan dukungan dan visibilitas lebih, serta solusi digitalisasi yang praktis. [cite: 138]</p>
+                                <h4>Solusi Solera</h4>
+                                [cite_start]<p>Menyediakan platform untuk menjangkau seluruh warga sekolah dan fitur iklan untuk promosi. [cite: 138, 90]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="krisis">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Protokol Komunikasi Krisis</h2>
+                    <p>Panduan untuk merespons situasi darurat secara cepat, tenang, dan terkoordinasi.</p>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span><i class="fas fa-exclamation-triangle"></i> Identifikasi Potensi Krisis</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                [cite_start]<p>Tim harus waspada terhadap isu seperti masalah pembayaran, kantin yang membludak, atau bug pada aplikasi. [cite: 259]</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span><i class="fas fa-sitemap"></i> Alur Eskalasi</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                [cite_start]<p>Membentuk tim inti yang bertanggung jawab dengan alur eskalasi yang jelas untuk memastikan respons yang cepat dan terkoordinasi. [cite: 259]</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span><i class="fas fa-bullhorn"></i> Kanal Komunikasi Resmi</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                [cite_start]<p>Semua komunikasi resmi HANYA melalui: Website (company.solera.id), media sosial resmi, nomor kontak 0851-2328-9175, dan posko bantuan on-site. [cite: 260]</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span><i class="fas fa-book"></i> Pesan Kunci & FAQ</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-content-inner">
+                                [cite_start]<p>Siapkan pesan standar untuk memastikan konsistensi, menunjukkan empati, dan meminimalkan penyebaran informasi yang salah. [cite: 260]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 PT. Solera Crypto Network. Portal Internal Divisi Marketing.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // =================================
+            // 1. Navigation Logic
+            // =================================
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+
+            // Smooth scroll for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Highlight nav link on scroll
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            // =================================
+            // 2. Strategy Page Sidebar Logic
+            // =================================
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const strategyItems = document.querySelectorAll('.strategy-item');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+
+            const strategyObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting){
+                        const id = entry.target.getAttribute('id');
+                        document.querySelector(`.sidebar-link[href="#${id}"]`).classList.add('active');
+                    } else {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelector(`.sidebar-link[href="#${id}"]`).classList.remove('active');
+                    }
+                });
+            }, observerOptions);
+
+            strategyItems.forEach(item => {
+                strategyObserver.observe(item);
+            });
+
+
+            // =================================
+            // 3. KPI Dashboard Generation
+            // =================================
+            const kpiGridContainer = document.getElementById('kpi-grid-container');
+            if (kpiGridContainer) {
+                const kpiData = [
+                    { title: "Pengguna Aktif", target: 500, currentValue: 120, unit: "pengguna" },
+                    { title: "UMKM Aktif", target: 20, currentValue: 8, unit: "UMKM" },
+                    { title: "Penggunaan Pre-order", target: 30, currentValue: 15, unit: "%" },
+                    { title: "Penggunaan Cashless", target: 50, currentValue: 45, unit: "%" },
+                    { title: "Kepuasan Pengguna", target: 85, currentValue: 78, unit: "%" },
+                    { title: "Brand Awareness", target: 50, currentValue: 25, unit: "%" },
+                ];
+
+                kpiData.forEach(kpi => {
+                    const percentage = kpi.target > 0 ? (kpi.currentValue / kpi.target) * 100 : 0;
+                    const card = document.createElement('div');
+                    card.className = 'kpi-card';
+                    card.innerHTML = `
+                        <h4>${kpi.title}</h4>
+                        <div class="metric-group">Target: ${kpi.target.toLocaleString('id-ID')} ${kpi.unit}</div>
+                        <div class="progress-container">
+                            <div class="progress-info">
+                                <span>${kpi.currentValue.toLocaleString('id-ID')}</span>
+                                <span>${percentage.toFixed(0)}%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar" style="width: ${percentage > 100 ? 100 : percentage}%"></div>
+                            </div>
+                        </div>
+                        <div class="kpi-footer">Pemantauan Bulanan</div>
+                    `;
+                    kpiGridContainer.appendChild(card);
+                });
+            }
+
+            // =================================
+            // 4. Accordion Logic for Crisis Page
+            // =================================
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const item = header.parentElement;
+                    
+                    if (item.classList.contains('active')) {
+                        item.classList.remove('active');
+                        content.style.maxHeight = null;
+                        header.classList.remove('active');
+                    } else {
+                        // Optional: close other accordions
+                        // document.querySelectorAll('.accordion-item.active').forEach(activeItem => {
+                        //     activeItem.classList.remove('active');
+                        //     activeItem.querySelector('.accordion-content').style.maxHeight = null;
+                        //     activeItem.querySelector('.accordion-header').classList.remove('active');
+                        // });
+                        
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        header.classList.add('active');
+                    }
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>
