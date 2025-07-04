@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Kendali Marketing - Solera</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =================================
+           1. GLOBAL STYLING & DARK MODE VARIABLES
+           ================================= */
+        :root {
+            --bg-color: #f8f9fa; --surface-color: #ffffff; --primary-color: #2c3e50;
+            --secondary-color: #3498db; --text-primary: #212529; --text-secondary: #6c757d;
+            --border-color: #dee2e6; --header-bg: rgba(255, 255, 255, 0.9);
+            --success-color: #27ae60; --danger-color: #c0392b;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212; --surface-color: #1e1e1e; --primary-color: #ecf0f1;
+            --secondary-color: #3498db; --text-primary: #f8f9fa; --text-secondary: #adb5bd;
+            --border-color: #495057; --header-bg: rgba(30, 30, 30, 0.9);
+            --success-color: #2ecc71;
+        }
+
+        /* =================================
+           2. GENERAL LAYOUT & TYPOGRAPHY
+           ================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); transition: background-color 0.3s, color 0.3s; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        section { padding: 5rem 0; border-bottom: 1px solid var(--border-color); }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); }
+        .section-header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0.5rem auto 0; }
+        .card { background-color: var(--surface-color); padding: 2rem; border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+
+        /* =================================
+           3. HEADER & NAVIGATION
+           ================================= */
+        .main-header { background-color: var(--header-bg); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-color); padding: 1rem 0; position: sticky; top: 0; z-index: 1000; }
+        .main-header .container { display: flex; justify-content: space-between; align-items: center; }
+        .main-header h1 { font-size: 1.5rem; font-weight: 600; color: var(--primary-color); }
+        nav ul { list-style: none; display: flex; gap: 0.5rem; }
+        nav a { padding: 0.5rem 1rem; text-decoration: none; color: var(--text-secondary); font-weight: 500; border-radius: 8px; transition: all 0.3s ease; }
+        nav a:hover { color: var(--text-primary); background-color: var(--border-color); }
+        nav a.active { color: #ffffff; background-color: var(--secondary-color); font-weight: 600; }
+        #theme-toggle { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; margin-left: 1rem; }
+        .header-right { display: flex; align-items: center; }
+
+        /* =================================
+           4. KPI & BUDGET DASHBOARD STYLES
+           ================================= */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .kpi-card { background-color: var(--surface-color); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .kpi-card h4 { font-size: 1.2rem; margin: 0 0 1rem 0; color: var(--primary-color); }
+        .progress-bar-bg { background-color: var(--bg-color); height: 10px; border-radius: 5px; }
+        .progress-bar { background: linear-gradient(90deg, #5DADE2, var(--secondary-color)); height: 100%; width: 0; border-radius: 5px; transition: width 1s ease-out; }
+        
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .summary-card { background-color: var(--surface-color); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); }
+        .summary-card h4 { margin: 0 0 0.5rem 0; font-size: 1rem; font-weight: 500; color: var(--text-secondary); }
+        .summary-card .amount { font-size: 2rem; font-weight: 700; color: var(--primary-color); }
+        .summary-card .amount.success { color: var(--success-color); }
+        .summary-card .amount.danger { color: var(--danger-color); }
+
+        .budget-table { width: 100%; border-collapse: collapse; }
+        .budget-table th, .budget-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .budget-table th { background-color: var(--bg-color); font-weight: 600; color: var(--primary-color); }
+        .budget-table .progress-bar { background: var(--secondary-color); }
+        .budget-table .progress-bar.overbudget { background: var(--danger-color); }
+
+        .loading-state, .error-state { text-align: center; padding: 4rem; font-size: 1.2rem; color: var(--text-secondary); }
+        .loading-state .fa-spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* =================================
+           5. INTERACTIVE CHECKLIST STYLES
+           ================================= */
+        .preparation-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem; }
+        .pic-select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--surface-color); color: var(--text-primary); }
+        tr.completed td { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
+        .comment-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-secondary); cursor: pointer; }
+        .comment-btn.has-comment { color: var(--success-color); }
+        .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: var(--surface-color); margin: 10% auto; padding: 25px; border-radius: 12px; max-width: 600px; }
+        #comment-textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--bg-color); color: var(--text-primary); }
+        .save-comment-btn { background-color: var(--secondary-color); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
+
+        /* =================================
+           6. CALENDAR STYLES
+           ================================= */
+        .calendar-wrapper { position: relative; padding-bottom: 75%; height: 0; overflow: hidden; }
+        .calendar-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1>Pusat Kendali Marketing</h1>
+            <div class="header-right">
+                <nav>
+                    <ul>
+                        <li><a href="#dasbor-kpi" class="nav-link active">KPI</a></li>
+                        <li><a href="#anggaran" class="nav-link">Anggaran</a></li>
+                        <li><a href="#checklist" class="nav-link">Checklist</a></li>
+                        <li><a href="#kalender" class="nav-link">Kalender</a></li>
+                    </ul>
+                </nav>
+                <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="dasbor-kpi">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dasbor Kinerja (Live)</h2>
+                    <p>Data kinerja utama yang diperbarui secara otomatis dari Google Sheet tim.</p>
+                </div>
+                <div class="dashboard-grid" id="kpi-grid-container">
+                    <div id="kpi-loading" class="loading-state"><i class="fas fa-spinner"></i> Memuat data KPI...</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="anggaran">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-wallet"></i> Pelacak Anggaran (Live)</h2>
+                    <p>Pantau alokasi dan penggunaan dana kampanye secara real-time dari Google Sheet.</p>
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-card"><h4>Total Anggaran</h4><div id="total-alokasi" class="amount">Rp 0</div></div>
+                    <div class="summary-card"><h4>Total Pengeluaran</h4><div id="total-aktual" class="amount">Rp 0</div></div>
+                    <div class="summary-card"><h4>Sisa Anggaran</h4><div id="sisa-anggaran" class="amount">Rp 0</div></div>
+                </div>
+                <div class="card">
+                    <table class="budget-table">
+                        <thead><tr><th>Kategori</th><th>Penggunaan Dana</th><th>Alokasi</th><th>Aktual</th><th>Sisa</th></tr></thead>
+                        <tbody id="budget-table-body"></tbody>
+                    </table>
+                    <div id="budget-loading" class="loading-state"><i class="fas fa-spinner"></i> Memuat data anggaran...</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="checklist">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-tasks"></i> Checklist & Penugasan Tim</h2>
+                    <p>Papan tugas interaktif untuk memantau progres dan penanggung jawab setiap tugas.</p>
+                </div>
+                <div class="card">
+                    <table class="preparation-table">
+                        <thead><tr><th>Status</th><th>Kategori</th><th>Tugas</th><th>PIC</th><th>Diskusi</th></tr></thead>
+                        <tbody>
+                            <tr class="category-header"><td colspan="5">A. Perencanaan</td></tr>
+                            <tr data-task-id="A1"><td><input type="checkbox" class="task-checkbox"></td><td>Seminar</td><td>Merancang materi presentasi seminar.</td><td><select class="pic-select"></select></td><td><button class="comment-btn"><i class="fas fa-comment-dots"></i></button></td></tr>
+                            <tr class="category-header"><td colspan="5">B. Produksi</td></tr>
+                            <tr data-task-id="B1"><td><input type="checkbox" class="task-checkbox"></td><td>Desain</td><td>Membuat desain untuk Feeds & Story.</td><td><select class="pic-select"></select></td><td><button class="comment-btn"><i class="fas fa-comment-dots"></i></button></td></tr>
+                            <tr data-task-id="B2"><td><input type="checkbox" class="task-checkbox"></td><td>Video</td><td>Editing Video Reels Instagram.</td><td><select class="pic-select"></select></td><td><button class="comment-btn"><i class="fas fa-comment-dots"></i></button></td></tr>
+                            <tr class="category-header"><td colspan="5">C. Eksekusi</td></tr>
+                            <tr data-task-id="C1"><td><input type="checkbox" class="task-checkbox"></td><td>Komunitas</td><td>Membalas komentar Instagram harian.</td><td><select class="pic-select"></select></td><td><button class="comment-btn"><i class="fas fa-comment-dots"></i></button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="kalender">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-alt"></i> Kalender Pemasaran Tim</h2>
+                    <p>Satu sumber kebenaran untuk semua jadwal, deadline, dan event penting.</p>
+                </div>
+                <div class="card calendar-wrapper">
+                    <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FJakarta&src=c29sZXJhLmlkXzAzcnM4YzM3dWdpb2M0N2YzbmtxdWhyZHFvQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23AD1457" ></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="commentModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Catatan Tugas</h2><span class="close-btn">&times;</span></div><textarea id="comment-textarea"></textarea><input type="hidden" id="current-task-id"><div class="modal-footer"><button id="save-comment-btn" class="save-comment-btn">Simpan</button></div></div></div>
+
+    <footer class="main-footer"><p>&copy; 2025 Solera. Pusat Kendali Divisi Marketing.</p></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ===========================================
+            // --- 1. DARK MODE & NAVIGATION LOGIC ---
+            // ===========================================
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+            
+            const applyTheme = (theme) => {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+                themeToggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', theme);
+            };
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) applyTheme(savedTheme);
+            
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                applyTheme(newTheme);
+            });
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 150) current = section.getAttribute('id');
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+                });
+            });
+
+            // ===========================================
+            // --- 2. LIVE KPI DASHBOARD LOGIC ---
+            // ===========================================
+            function loadKpiDashboard() {
+                // PENTING: Ganti URL ini dengan URL .csv KPI Anda
+                const kpiSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5pY1Y8L-nJ2d_1G8e7r-8s2B5uX9l-J8c1R7b8o4K-n9P5z5m_gX6b3F4H-t-A7b9z8N/pub?output=csv';
+                const kpiGrid = document.getElementById('kpi-grid-container');
+                const kpiLoading = document.getElementById('kpi-loading');
+
+                fetch(kpiSheetURL)
+                    .then(res => res.ok ? res.text() : Promise.reject('Gagal ambil data KPI.'))
+                    .then(csv => {
+                        kpiLoading.style.display = 'none';
+                        const rows = csv.split('\n').slice(1);
+                        rows.forEach(row => {
+                            const [metric, current, target] = row.split(',');
+                            if (!metric) return;
+                            const percentage = parseFloat(target) > 0 ? (parseFloat(current) / parseFloat(target)) * 100 : 0;
+                            const card = document.createElement('div');
+                            card.className = 'kpi-card';
+                            card.innerHTML = `<h4>${metric.trim()}</h4><div class="progress-bar-bg"><div class="progress-bar" style="width: ${percentage > 100 ? 100 : percentage}%"></div></div>`;
+                            kpiGrid.appendChild(card);
+                        });
+                    }).catch(err => kpiLoading.textContent = `Error: ${err}`);
+            }
+            loadKpiDashboard();
+
+            // ===========================================
+            // --- 3. LIVE BUDGET TRACKER LOGIC ---
+            // ===========================================
+            function loadBudgetTracker() {
+                 // PENTING: Ganti URL ini dengan URL .csv Anggaran Anda
+                const budgetSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-8F7jQJ1y2a5b6c_X8D9gY_0w7Z4n_kL1V6p9w8R-f_e7I-j9H5l_cO-B1a_A-N3bM9n/pub?gid=0&single=true&output=csv';
+                const tableBody = document.getElementById('budget-table-body');
+                const budgetLoading = document.getElementById('budget-loading');
+                const formatRupiah = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+
+                fetch(budgetSheetURL)
+                    .then(res => res.ok ? res.text() : Promise.reject('Gagal ambil data Anggaran.'))
+                    .then(csv => {
+                        let totalAlokasi = 0, totalAktual = 0;
+                        const rows = csv.split('\n').slice(1);
+                        rows.forEach(row => {
+                            const [kategori, alokasiStr, aktualStr] = row.split(',');
+                            if (!kategori) return;
+                            const alokasi = parseFloat(alokasiStr), aktual = parseFloat(aktualStr);
+                            totalAlokasi += alokasi; totalAktual += aktual;
+                            const percentage = alokasi > 0 ? (aktual / alokasi) * 100 : 0;
+                            const tableRow = document.createElement('tr');
+                            tableRow.innerHTML = `<td><strong>${kategori.trim()}</strong></td><td><div class="progress-bar-bg"><div class="progress-bar ${percentage > 100 ? 'overbudget' : ''}" style="width: ${percentage > 100 ? 100 : percentage}%"></div></div></td><td>${formatRupiah(alokasi)}</td><td>${formatRupiah(aktual)}</td><td>${formatRupiah(alokasi - aktual)}</td>`;
+                            tableBody.appendChild(tableRow);
+                        });
+                        document.getElementById('total-alokasi').textContent = formatRupiah(totalAlokasi);
+                        document.getElementById('total-aktual').textContent = formatRupiah(totalAktual);
+                        const sisa = totalAlokasi - totalAktual;
+                        const sisaEl = document.getElementById('sisa-anggaran');
+                        sisaEl.textContent = formatRupiah(sisa);
+                        sisaEl.classList.toggle('success', sisa >= 0);
+                        sisaEl.classList.toggle('danger', sisa < 0);
+                        budgetLoading.style.display = 'none';
+                    }).catch(err => budgetLoading.textContent = `Error: ${err}`);
+            }
+            loadBudgetTracker();
+            
+            // ===========================================
+            // --- 4. INTERACTIVE CHECKLIST LOGIC ---
+            // ===========================================
+            const allTaskRows = document.querySelectorAll('tr[data-task-id]');
+            const teamMembers = ["Pilih PIC", "Andi", "Budi", "Citra", "Doni"];
+            const modal = document.getElementById('commentModal');
+            
+            allTaskRows.forEach(row => {
+                const taskId = row.dataset.taskId;
+                const checkbox = row.querySelector('.task-checkbox');
+                const picSelect = row.querySelector('.pic-select');
+                const commentBtn = row.querySelector('.comment-btn');
+
+                if (picSelect.options.length === 0) teamMembers.forEach(m => picSelect.add(new Option(m, m)));
+                
+                const savedState = JSON.parse(localStorage.getItem(`task_${taskId}`));
+                if (savedState) {
+                    checkbox.checked = savedState.completed;
+                    row.classList.toggle('completed', savedState.completed);
+                    picSelect.value = savedState.pic;
+                    commentBtn.classList.toggle('has-comment', !!savedState.comment);
+                }
+
+                const updateListener = () => {
+                    const state = JSON.parse(localStorage.getItem(`task_${taskId}`)) || {};
+                    state.completed = checkbox.checked;
+                    state.pic = picSelect.value;
+                    row.classList.toggle('completed', checkbox.checked);
+                    localStorage.setItem(`task_${taskId}`, JSON.stringify(state));
+                };
+                checkbox.addEventListener('change', updateListener);
+                picSelect.addEventListener('change', updateListener);
+
+                commentBtn.addEventListener('click', () => {
+                    const state = JSON.parse(localStorage.getItem(`task_${taskId}`)) || {};
+                    document.getElementById('comment-textarea').value = state.comment || "";
+                    document.getElementById('current-task-id').value = taskId;
+                    modal.style.display = "block";
+                });
+            });
+
+            document.getElementById('save-comment-btn').onclick = () => {
+                const taskId = document.getElementById('current-task-id').value;
+                const state = JSON.parse(localStorage.getItem(`task_${taskId}`)) || {};
+                state.comment = document.getElementById('comment-textarea').value.trim();
+                localStorage.setItem(`task_${taskId}`, JSON.stringify(state));
+                document.querySelector(`tr[data-task-id="${taskId}"] .comment-btn`).classList.toggle('has-comment', !!state.comment);
+                modal.style.display = "none";
+            };
+            document.querySelector('.close-btn').onclick = () => modal.style.display = "none";
+            window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; };
+
+        });
+    </script>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Master Tim Social Media - Solera</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =================================
+           1. GLOBAL STYLING & VARIABLES
+           ================================= */
+        :root {
+            --bg-color: #f9fafb;
+            --surface-color: #ffffff;
+            --primary-color: #1f2937; /* Dark Grey/Blue */
+            --secondary-color: #4f46e5; /* Indigo */
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); line-height: 1.7; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+        section { padding: 5rem 0; border-bottom: 1px solid var(--border-color); }
+        section:last-of-type { border-bottom: none; }
+        
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1rem; }
+        .section-header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
+
+        /* =================================
+           2. HEADER & NAVIGATION
+           ================================= */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color); padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .main-header .container { display: flex; justify-content: space-between; align-items: center; }
+        .main-header h1 { font-size: 1.5rem; font-weight: 600; color: var(--primary-color); }
+        nav ul { list-style: none; display: flex; gap: 0.5rem; }
+        nav a { padding: 0.5rem 1rem; text-decoration: none; color: var(--text-secondary); font-weight: 500; border-radius: 8px; transition: all 0.3s ease; }
+        nav a:hover { color: var(--text-primary); background-color: #e9ecef; }
+        nav a.active { color: #ffffff; background-color: var(--secondary-color); font-weight: 600; }
+        
+        /* =================================
+           3. ROLE GUIDE STYLES
+           ================================= */
+        .role-section { background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 2.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); overflow: hidden; }
+        .role-header { padding: 2rem; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .role-icon { width: 70px; height: 70px; border-radius: 50%; background-color: #e0e7ff; color: var(--secondary-color); font-size: 2rem; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; }
+        .role-header h2 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.5rem 0; }
+        .role-header p { font-size: 1rem; color: var(--text-secondary); margin: 0; }
+        .role-content { padding: 2rem; }
+        .role-content h3 { font-size: 1.5rem; font-weight: 600; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        .detail-card { background-color: #f9fafb; border: 1px solid var(--border-color); border-left: 5px solid var(--secondary-color); padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .detail-card h4 { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
+        .detail-card p { margin: 0; }
+        .responsibility-list { list-style: none; padding-left: 0; }
+        .responsibility-list li { padding-left: 2rem; position: relative; margin-bottom: 1rem; }
+        .responsibility-list li::before { content: '\f058'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: #4ade80; font-size: 1.2rem; }
+
+        /* =================================
+           4. MILESTONE & CHECKLIST STYLES
+           ================================= */
+        .table-wrapper { overflow-x: auto; }
+        .preparation-table { width: 100%; border-collapse: collapse; margin-top: 2rem; font-size: 0.95rem; }
+        .preparation-table th, .preparation-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .preparation-table th { background-color: var(--bg-color); font-weight: 600; color: var(--primary-color); }
+        .task-checkbox { width: 18px; height: 18px; cursor: pointer; }
+        tr.completed td { text-decoration: line-through; color: #9ca3af; }
+        .category-header td { font-weight: 700; background-color: #f3f4f6; color: #4b5563; }
+
+        /* =================================
+           5. TABBED INTERFACE FOR GUIDES
+           ================================= */
+        .tabs-container { background-color: var(--surface-color); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); }
+        .tab-nav { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; }
+        .tab-btn { padding: 1rem 1.5rem; cursor: pointer; background: none; border: none; font-size: 1rem; font-weight: 600; color: var(--text-secondary); border-bottom: 3px solid transparent; transition: all 0.3s ease; }
+        .tab-btn:hover { color: var(--primary-color); }
+        .tab-btn.active { color: var(--secondary-color); border-bottom-color: var(--secondary-color); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1>Panduan Master Sosmed</h1>
+            <nav>
+                <ul>
+                    <li><a href="#peran" class="nav-link active">Peran Tim</a></li>
+                    <li><a href="#milestone" class="nav-link">Milestone</a></li>
+                    <li><a href="#panduan" class="nav-link">Panduan Detail</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="peran">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Peran & Tanggung Jawab Tim</h2>
+                    <p>Pembagian peran yang jelas untuk memastikan alur kerja yang sinergis dan pencapaian target yang optimal.</p>
+                </div>
+
+                <article class="role-section">
+                    <div class="role-header"><div class="role-icon"><i class="fas fa-bullseye"></i></div><h2>Social Media Officer</h2><p>Nakhoda strategi media sosial, bertanggung jawab atas perencanaan, kualitas, dan pencapaian target.</p></div>
+                </article>
+
+                <article class="role-section">
+                    <div class="role-header"><div class="role-icon" style="background-color: #fef3c7; color: #f59e0b;"><i class="fas fa-pencil-alt"></i></div><h2>Content Writer</h2><p>Arsitek narasi, bertanggung jawab atas riset, ide, perencanaan jadwal, dan pembuatan naskah yang menarik.</p></div>
+                </article>
+
+                <article class="role-section">
+                    <div class="role-header"><div class="role-icon" style="background-color: #dbeafe; color: #3b82f6;"><i class="fas fa-palette"></i></div><h2>Graphic Designer</h2><p>Penerjemah visual, bertanggung jawab mengubah ide menjadi aset visual yang selaras dengan identitas brand.</p></div>
+                </article>
+            </div>
+        </section>
+
+        <section id="milestone">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Milestone & Checklist Persiapan</h2>
+                    <p>Panduan operasional untuk melacak setiap tugas persiapan peluncuran secara detail dan terstruktur.</p>
+                </div>
+                <div class="table-container">
+                    <h3>Checklist Persiapan Detail</h3>
+                    <p>Gunakan tabel di bawah ini untuk melacak status penyelesaian setiap tugas.</p>
+                    <div class="table-wrapper">
+                        <table class="preparation-table">
+                            <thead><tr><th>Status</th><th>Kategori</th><th>Tugas</th><th>PIC</th></tr></thead>
+                            <tbody>
+                                <tr class="category-header"><td colspan="4">A. Perencanaan & Strategi</td></tr>
+                                <tr data-task-id="A1"><td><input type="checkbox" class="task-checkbox"></td><td>Seminar</td><td>Merancang materi presentasi seminar.</td><td><select class="pic-select"></select></td></tr>
+                                <tr data-task-id="A2"><td><input type="checkbox" class="task-checkbox"></td><td>Konten</td><td>Membuat plottingan konten bulanan.</td><td><select class="pic-select"></select></td></tr>
+                                <tr class="category-header"><td colspan="4">B. Produksi Aset</td></tr>
+                                <tr data-task-id="B1"><td><input type="checkbox" class="task-checkbox"></td><td>Desain</td><td>Membuat desain untuk Feeds & Story Instagram.</td><td><select class="pic-select"></select></td></tr>
+                                <tr data-task-id="B2"><td><input type="checkbox" class="task-checkbox"></td><td>Video</td><td>Editing Video Reels Instagram.</td><td><select class="pic-select"></select></td></tr>
+                                <tr data-task-id="B3"><td><input type="checkbox" class="task-checkbox"></td><td>Penulisan</td><td>Membuat brief dan caption konten.</td><td><select class="pic-select"></select></td></tr>
+                                <tr class="category-header"><td colspan="4">C. Eksekusi & Manajemen</td></tr>
+                                <tr data-task-id="C1"><td><input type="checkbox" class="task-checkbox"></td><td>Komunitas</td><td>Membalas komentar Instagram setiap hari.</td><td><select class="pic-select"></select></td></tr>
+                                <tr data-task-id="C2"><td><input type="checkbox" class="task-checkbox"></td><td>Distribusi</td><td>Share konten ke grup komunitas.</td><td><select class="pic-select"></select></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="panduan">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Panduan Kerja Lengkap</h2>
+                    <p>Pilih tab di bawah ini untuk melihat detail panduan operasional untuk setiap peran.</p>
+                </div>
+                <div class="tabs-container">
+                    <div class="tab-nav">
+                        <button class="tab-btn active" data-tab="tab-smo">Social Media Officer</button>
+                        <button class="tab-btn" data-tab="tab-cw">Content Writer</button>
+                        <button class="tab-btn" data-tab="tab-gd">Graphic Designer</button>
+                    </div>
+                    
+                    <div id="tab-smo" class="tab-content active">
+                        <div class="role-content">
+                            <h3>Tanggung Jawab Social Media Officer</h3>
+                            <div class="detail-card"><h4>KPI Utama</h4><p>Mencapai target pertumbuhan followers 1-5% dan engagement rate 1,5% per bulan.</p></div>
+                            <div class="detail-card"><h4>Tanggung Jawab Strategis</h4><p>Memastikan kualitas, kuantitas, dan keselarasan ide konten dengan tujuan. Memastikan semua rencana konten selesai sesuai deadline. Memimpin produksi 1 ide konten viral setiap bulan.</p></div>
+                            <div class="detail-card"><h4>Tugas Eksekusi Harian</h4><p>Melakukan posting terjadwal, pemeriksaan akhir caption, membalas komentar setiap hari, mendistribusikan konten ke grup, dan berkoordinasi dengan Brand Ambassador.</p></div>
+                        </div>
+                    </div>
+                    
+                    <div id="tab-cw" class="tab-content">
+                        <div class="role-content">
+                            <h3>Alur Kerja Content Writer</h3>
+                            <div class="detail-card"><h4>Tahap 1: Riset & Ideasi</h4><p>Mencari referensi konten dari berbagai sumber dan berkolaborasi dalam penggagasan ide konten viral.</p></div>
+                            <div class="detail-card"><h4>Tahap 2: Perencanaan & Plotting</h4><p>Menyusun jadwal editorial (plottingan konten) yang merinci tema, format, dan tanggal publikasi.</p></div>
+                            <div class="detail-card"><h4>Tahap 3: Brief & Penulisan</h4><p>Membuat brief konten yang detail untuk tim desain dan menulis naskah caption yang menarik dan akurat.</p></div>
+                        </div>
+                    </div>
+
+                    <div id="tab-gd" class="tab-content">
+                        <div class="role-content">
+                            <h3>Kategori Tugas Graphic Designer</h3>
+                            <div class="detail-card"><h4>Desain Media Sosial</h4><p>Membuat visual untuk Feeds dan Story Instagram, serta melakukan editing untuk Video Reels.</p></div>
+                            <div class="detail-card"><h4>Desain Internal & Eksternal</h4><p>Mendesain berbagai jenis sertifikat (acara, apresiasi, pemateri, peserta), desain ucapan hari besar, dan memenuhi permintaan desain dari divisi lain.</p></div>
+                            <div class="detail-card"><h4>Prinsip Kerja</h4><p>Selalu mengikuti GDP (Good Design Practice/Guidelines) untuk menjaga konsistensi merek dan bekerja berdasarkan brief yang telah disiapkan.</p></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 Solera. Panduan Master Tim Social Media.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. LOGIKA UNTUK NAVIGASI HALUS & SOROTAN AKTIF ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) { e.preventDefault(); document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' }); });
+            });
+
+
+            // --- 2. LOGIKA UNTUK CHECKLIST INTERAKTIF ---
+            const teamMembers = ["Pilih PIC", "Andi", "Budi", "Citra", "Doni"];
+            const allTaskRows = document.querySelectorAll('tr[data-task-id]');
+            allTaskRows.forEach(row => {
+                const picSelect = row.querySelector('.pic-select');
+                if (picSelect && picSelect.options.length === 0) {
+                    teamMembers.forEach(member => picSelect.add(new Option(member, member)));
+                }
+                const checkbox = row.querySelector('.task-checkbox');
+                checkbox.addEventListener('change', () => row.classList.toggle('completed', checkbox.checked));
+            });
+
+
+            // --- 3. LOGIKA UNTUK TAB ---
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const targetTab = button.dataset.tab;
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === targetTab) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>
